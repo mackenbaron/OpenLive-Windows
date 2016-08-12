@@ -200,7 +200,7 @@ void CSetupDlg::SetVideoSolution(int nIndex)
 CString CSetupDlg::GetVideoSolutionDes()
 {
     int nIndex = m_cbxVideoProfile.GetCurSel();
-    if (nIndex = -1)
+    if (nIndex == -1)
         nIndex = 0;
 
     return (CString)m_szProfileDes[nIndex];
