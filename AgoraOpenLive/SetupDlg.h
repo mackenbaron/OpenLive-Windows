@@ -55,6 +55,7 @@ private:
 	CFont			m_ftDes;		// text in ctrl
 	CFont			m_ftBtn;		// button
 
+    int                 m_nProfileValue[64];
 	LPTSTR			    m_szProfileDes[64];
 	AGNET_RATE_RANGE	m_agRateRange[13];
 	

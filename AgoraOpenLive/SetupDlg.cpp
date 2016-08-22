@@ -84,9 +84,10 @@ void CSetupDlg::InitCtrls()
 
 	m_btnConfirm.MoveWindow(10, ClientRect.Height() - 58, 300, 48, TRUE);
 
-    for (int nIndex = 0; nIndex < 34; nIndex++) {
+    for (int nIndex = 0; nIndex < 29; nIndex++) {
         m_cbxVideoProfile.InsertString(nIndex, m_szProfileDes[nIndex]);
         m_cbxVideoProfile.SetItemHeight(nIndex, 25);
+        m_cbxVideoProfile.SetItemData(nIndex, (DWORD_PTR)m_nProfileValue[nIndex]);
     }
 
 	m_btnConfirm.SetBackColor(RGB(0, 160, 239), RGB(0, 160, 239), RGB(0, 160, 239), RGB(192, 192, 192));
@@ -105,41 +106,71 @@ void CSetupDlg::InitCtrls()
 void CSetupDlg::InitData()
 {
     m_szProfileDes[0] = _T("160x120 15fps");
-    m_szProfileDes[1] = _T("160x160 15fps");
+    m_nProfileValue[0] = 0;
+    m_szProfileDes[1] = _T("120x160 15fps");
+    m_nProfileValue[1] = 1;
     m_szProfileDes[2] = _T("120x120 15fps");
-    m_szProfileDes[3] = _T("320x180 15fps");
-    m_szProfileDes[4] = _T("180x320 15fps");
-    m_szProfileDes[5] = _T("180x180 15fps");
-    m_szProfileDes[6] = _T("320x240 15fps");
-    m_szProfileDes[7] = _T("240x320 15fps");
-    m_szProfileDes[8] = _T("240x240 15fps");
-    m_szProfileDes[9] = _T("640x360 15fps");
-    m_szProfileDes[10] = _T("360x640 15fps");
-    m_szProfileDes[11] = _T("360x360 15fps");
-    m_szProfileDes[12] = _T("640x360 15fps");
-    m_szProfileDes[13] = _T("360x640 30fps");
-    m_szProfileDes[14] = _T("360x360 30fps");
-    m_szProfileDes[15] = _T("640x480 15fps");
-    m_szProfileDes[16] = _T("480x640 15fps");
-    m_szProfileDes[17] = _T("480x480 15fps");
-    m_szProfileDes[18] = _T("640x480 30fps");
-    m_szProfileDes[19] = _T("480x640 30fps");
-    m_szProfileDes[20] = _T("480x480 30fps");
-    m_szProfileDes[21] = _T("640x480 15fps");
-    m_szProfileDes[22] = _T("1280x720 15fps");
-    m_szProfileDes[23] = _T("720x1280 15fps");
-    m_szProfileDes[24] = _T("1280x720 30fps");
-    m_szProfileDes[25] = _T("720x1280 30fps");
-    m_szProfileDes[26] = _T("1920x1080 15fps");
-    m_szProfileDes[27] = _T("1080x1920 15fps");
-    m_szProfileDes[28] = _T("480x640 30fps");
-    m_szProfileDes[29] = _T("480x480 30fps");
-    m_szProfileDes[30] = _T("640x480 15fps");
-    m_szProfileDes[31] = _T("1280x720 15fps");
-    m_szProfileDes[32] = _T("720x1280 15fps");
-    m_szProfileDes[33] = _T("1280x720 30fps");
-    m_szProfileDes[34] = _T("720x1280 30fps");
+    m_nProfileValue[2] = 2;
 
+    m_szProfileDes[3] = _T("320x180 15fps");
+    m_nProfileValue[3] = 10;
+    m_szProfileDes[4] = _T("180x320 15fps");
+    m_nProfileValue[4] = 11;
+    m_szProfileDes[5] = _T("180x180 15fps");
+    m_nProfileValue[5] = 12;
+
+    m_szProfileDes[6] = _T("320x240 15fps");
+    m_nProfileValue[6] = 20;
+    m_szProfileDes[7] = _T("240x320 15fps");
+    m_nProfileValue[7] = 21;
+    m_szProfileDes[8] = _T("240x240 15fps");
+    m_nProfileValue[8] = 22;
+
+    m_szProfileDes[9] = _T("640x360 15fps");
+    m_nProfileValue[9] = 30;
+    m_szProfileDes[10] = _T("360x640 15fps");
+    m_nProfileValue[10] = 31;
+    m_szProfileDes[11] = _T("360x360 15fps");
+    m_nProfileValue[11] = 32;
+    m_szProfileDes[12] = _T("640x360 15fps");
+    m_nProfileValue[12] = 33;
+    m_szProfileDes[13] = _T("360x640 30fps");
+    m_nProfileValue[13] = 34;
+    m_szProfileDes[14] = _T("360x360 30fps");
+    m_nProfileValue[14] = 35;
+
+    m_szProfileDes[15] = _T("640x480 15fps");
+    m_nProfileValue[15] = 40;
+    m_szProfileDes[16] = _T("480x640 15fps");
+    m_nProfileValue[16] = 41;
+    m_szProfileDes[17] = _T("480x480 15fps");
+    m_nProfileValue[17] = 42;
+    m_szProfileDes[18] = _T("640x480 30fps");
+    m_nProfileValue[18] = 43;
+    m_szProfileDes[19] = _T("480x640 30fps");
+    m_nProfileValue[19] = 44;
+    m_szProfileDes[20] = _T("480x480 30fps");
+    m_nProfileValue[20] = 45;
+    m_szProfileDes[21] = _T("640x480 35fps");
+    m_nProfileValue[21] = 46;
+
+    m_szProfileDes[22] = _T("1280x720 15fps");
+    m_nProfileValue[22] = 50;
+    m_szProfileDes[23] = _T("720x1280 15fps");
+    m_nProfileValue[23] = 51;
+    m_szProfileDes[24] = _T("1280x720 30fps");
+    m_nProfileValue[24] = 52;
+    m_szProfileDes[25] = _T("720x1280 30fps");
+    m_nProfileValue[25] = 53;
+
+    m_szProfileDes[26] = _T("1920x1080 15fps");
+    m_nProfileValue[26] = 60;
+    m_szProfileDes[27] = _T("1080x1920 15fps");
+    m_nProfileValue[27] = 61;
+    m_szProfileDes[28] = _T("1920x1080 30fps");
+    m_nProfileValue[28] = 62;
+    m_szProfileDes[29] = _T("1080x1920 30fps");
+    m_nProfileValue[29] = 63;
 }
 
 void CSetupDlg::DrawClient(CDC *lpDC)
@@ -189,7 +220,8 @@ void CSetupDlg::OnPaint()
 
 int CSetupDlg::GetVideoSolution()
 {
-    return m_cbxVideoProfile.GetCurSel();
+    int nIndex = m_cbxVideoProfile.GetCurSel();
+    return (int)m_cbxVideoProfile.GetItemData(nIndex);
 }
 
 void CSetupDlg::SetVideoSolution(int nIndex)

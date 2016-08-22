@@ -25,7 +25,7 @@ using namespace agora::rtc;
 #define AG_CODEC_EVP	0x00000001
 #define AG_CODEC_VP8	0x00000002
 
-#define VENDOR_KEY _T("")
+#define VENDOR_KEY _T("f4637604af81440596a54254d53ade20")
 
 class CAgoraObject
 {
