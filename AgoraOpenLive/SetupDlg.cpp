@@ -132,7 +132,7 @@ void CSetupDlg::InitData()
     m_nProfileValue[10] = 31;
     m_szProfileDes[11] = _T("360x360 15fps");
     m_nProfileValue[11] = 32;
-    m_szProfileDes[12] = _T("640x360 15fps");
+    m_szProfileDes[12] = _T("640x360 30fps");
     m_nProfileValue[12] = 33;
     m_szProfileDes[13] = _T("360x640 30fps");
     m_nProfileValue[13] = 34;
@@ -151,7 +151,7 @@ void CSetupDlg::InitData()
     m_nProfileValue[19] = 44;
     m_szProfileDes[20] = _T("480x480 30fps");
     m_nProfileValue[20] = 45;
-    m_szProfileDes[21] = _T("640x480 35fps");
+    m_szProfileDes[21] = _T("640x480 15fps");
     m_nProfileValue[21] = 46;
 
     m_szProfileDes[22] = _T("1280x720 15fps");

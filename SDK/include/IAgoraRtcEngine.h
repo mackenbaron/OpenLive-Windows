@@ -1430,6 +1430,25 @@ public:
         return setObject("rtc.video.set_remote_video_stream", "{\"uid\":%u,\"stream\":%d}", uid, streamType);
     }
 
+
+    /**
+     * play the video stream from network
+     * @param [in] uri, the link of video source
+     * @return return 0 if success or an error code
+     */
+    int startPlayingStream(const char* uri) {
+        return m_parameter->setString("rtc.api.video.start_play_stream", uri);
+    }
+
+    /**
+     *  stop playing the video stream from network
+     *
+     * @return return 0 if success or an error code
+     */
+    int stopPlayingStream() {
+        return m_parameter->setBool("rtc.api.video.stop_play_stream", true);
+    }
+
     /**
     * set play sound volume
     * @param [in] volume
