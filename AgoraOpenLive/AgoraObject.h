@@ -4,7 +4,7 @@
 //#include "../SDK/include/rtc_engine_i.h"
 #include "AGEngineEventHandler.h"
 
-#define AVC_VER _T("V1.5.1.8(Build215, 08/30/2016, SDK:1.5.1.8)")
+#define AVC_VER _T("V1.5.1.10(Build216, 09/22/2016, SDK:1.5.1.10)")
 
 // #define ENABLE_CODEC	1
 

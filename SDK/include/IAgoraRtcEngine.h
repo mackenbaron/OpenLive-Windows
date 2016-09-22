@@ -249,30 +249,31 @@ enum VIDEO_PROFILE_TYPE
     VIDEO_PROFILE_360P = 30,        // 640x360   15   400
     VIDEO_PROFILE_360P_2 = 31,        // 360x640   15   400
     VIDEO_PROFILE_360P_3 = 32,        // 360x360   15   300
-    VIDEO_PROFILE_360P_4 = 33,        // 640x360   30   800
-    VIDEO_PROFILE_360P_5 = 34,        // 360x640   30   800
-    VIDEO_PROFILE_360P_6 = 35,        // 360x360   30   600
+    VIDEO_PROFILE_360P_4 = 33,        // 640x360   30   680
+    VIDEO_PROFILE_360P_5 = 34,        // 360x640   30   680
+    VIDEO_PROFILE_360P_6 = 35,        // 360x360   30  500
+    VIDEO_PROFILE_360P_7 = 36,        // 360x640   15   800
     VIDEO_PROFILE_480P = 40,        // 640x480   15   500
     VIDEO_PROFILE_480P_2 = 41,        // 480x640   15   500
     VIDEO_PROFILE_480P_3 = 42,        // 480x480   15   400
-    VIDEO_PROFILE_480P_4 = 43,        // 640x480   30   1000
-    VIDEO_PROFILE_480P_5 = 44,        // 480x640   30   1000
+    VIDEO_PROFILE_480P_4 = 43,        // 640x480   30   750
+    VIDEO_PROFILE_480P_5 = 44,        // 480x640   30   750
     VIDEO_PROFILE_480P_6 = 45,        // 480x480   30   800
 	VIDEO_PROFILE_480P_7 = 46,		// 640x480 15 1000
 	VIDEO_PROFILE_720P = 50,        // 1280x720  15   1000
     VIDEO_PROFILE_720P_2 = 51,        // 720x1280  15   1000
-    VIDEO_PROFILE_720P_3 = 52,        // 1280x720  30   2000
-    VIDEO_PROFILE_720P_4 = 53,        // 720x1280  30   2000
+    VIDEO_PROFILE_720P_3 = 52,        // 1280x720  30   1700
+    VIDEO_PROFILE_720P_4 = 53,        // 720x1280  30   1700
     VIDEO_PROFILE_1080P = 60,        // 1920x1080 15   1500
     VIDEO_PROFILE_1080P_2 = 61,        // 1080x1920 15   1500
-    VIDEO_PROFILE_1080P_3 = 62,        // 1920x1080 30   3000
-    VIDEO_PROFILE_1080P_4 = 63,        // 1080x1920 30   3000
-    VIDEO_PROFILE_1080P_5 = 64,        // 1920x1080 60   6000
-    VIDEO_PROFILE_1080P_6 = 65,        // 1080x1920 60   6000
+    VIDEO_PROFILE_1080P_3 = 62,        // 1920x1080 30   2550
+    VIDEO_PROFILE_1080P_4 = 63,        // 1080x1920 30   2550
+    VIDEO_PROFILE_1080P_5 = 64,        // 1920x1080 60   4300
+    VIDEO_PROFILE_1080P_6 = 65,        // 1080x1920 60   4300
     VIDEO_PROFILE_4K = 70,            // 3840x2160 30   8000
     VIDEO_PROFILE_4K_2 = 71,        // 2160x3080 30   8000
-    VIDEO_PROFILE_4K_3 = 72,        // 3840x2160 60   16000
-    VIDEO_PROFILE_4K_4 = 73,        // 2160x3840 60   16000
+    VIDEO_PROFILE_4K_3 = 72,        // 3840x2160 60   13600
+    VIDEO_PROFILE_4K_4 = 73,        // 2160x3840 60   13600
     VIDEO_PROFILE_DEFAULT = VIDEO_PROFILE_360P,
 };
 
@@ -317,6 +318,13 @@ struct RtcStats
     unsigned int rxBytes;
     unsigned short txKBitRate;
     unsigned short rxKBitRate;
+
+    unsigned short rxAudioKBitRate;
+    unsigned short txAudioKBitRate;
+
+    unsigned short rxVideoKBitRate;
+    unsigned short txVideoKBitRate;
+
     unsigned int lastmileQuality;
     unsigned int users;
     double cpuAppUsage;
@@ -1400,6 +1408,10 @@ public:
     */
     int muteLocalVideoStream(bool mute) {
         return setParameters("{\"rtc.video.mute_me\":%s,\"che.video.local.send\":%s}", mute ? "true" : "false", mute ? "false" : "true");
+    }
+
+    int enableLocalVideo(bool enabled) {
+        return setParameters("{\"rtc.video.capture\":%s,\"che.video.local.capture\":%s,\"che.video.local.render\":%s,\"che.video.local.send\":%s}", enabled ? "true" : "false", enabled ? "true" : "false", enabled ? "true" : "false", enabled ? "true" : "false");
     }
 
     /**
