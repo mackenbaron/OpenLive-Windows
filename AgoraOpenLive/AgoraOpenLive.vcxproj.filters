@@ -360,6 +360,9 @@
     <Image Include="res\IDB_BTNMAUDIOWB_VIDEO.bmp">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\AgoraOpenLive.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="res\ID_TEST_AUDIO.wav">

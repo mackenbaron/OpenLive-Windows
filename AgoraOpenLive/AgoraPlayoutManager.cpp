@@ -18,6 +18,8 @@ CAgoraPlayoutManager::~CAgoraPlayoutManager()
 BOOL CAgoraPlayoutManager::Create(IRtcEngine *lpRtcEngine)
 {
 	m_ptrDeviceManager = new AAudioDeviceManager(*lpRtcEngine);
+    if (m_ptrDeviceManager->get() == NULL)
+        return FALSE;
 
 	m_lpCollection = (*m_ptrDeviceManager)->enumeratePlaybackDevices();
 	if (m_lpCollection == NULL) {

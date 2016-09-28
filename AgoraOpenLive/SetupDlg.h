@@ -18,6 +18,8 @@ public:
     void SetVideoSolution(int nIndex);
     int GetVideoSolution();
     CString GetVideoSolutionDes();
+    void SetWHSwap(BOOL bSwap);
+    BOOL IsWHSwap();
 
 // 对话框数据
 	enum { IDD = IDD_SETUP_DIALOG };
@@ -48,6 +50,7 @@ protected:
 private:
 	CAGButton		m_btnConfirm;
 	CButton			m_ckSaveSettings;
+    CButton         m_ckSwapWH;
 
 	CComboBox		m_cbxVideoProfile;
 

@@ -69,11 +69,10 @@ CAgoraObject *CAgoraObject::GetAgoraObject(LPCTSTR lpVendorKey)
 	char szVendorKey[128];
 
 	::WideCharToMultiByte(CP_ACP, 0, lpVendorKey, -1, szVendorKey, 128, NULL, NULL);
-	ctx.vendorKey = szVendorKey;
+	ctx.appId = szVendorKey;
 #else
-	ctx.vendorKey = lpVendorKey;
+    ctx.appId = lpVendorKey;
 #endif
-	ctx.applicationCategory = APPLICATION_CATEGORY_LIVE_BROADCASTING;
 	m_lpAgoraEngine->initialize(ctx);
 
 	if (lpVendorKey != NULL)
@@ -386,12 +385,6 @@ BOOL CAgoraObject::SetClientRole(int nIndex)
 	case 1:
 		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_AUDIENCE);
 		break;
-	case 2:
-		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_DUAL_STREAM_BROADCASTER);
-		break;
-	case 3:
-		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_DUAL_STREAM_AUDIENCE);
-		break;
 	default:
 		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
 		nIndex = 0;
@@ -425,27 +418,7 @@ BOOL CAgoraObject::EnableAudioRecording(BOOL bEnable, LPCTSTR lpFilePath)
 
 	return ret == 0 ? TRUE : FALSE;
 }
-/*
-BOOL CAgoraObject::RefreashRecordingServiceStatus()
-{
-	RtcEngineParameters rep(*m_lpAgoraEngine);
-	int ret = rep.refreshRecordingServiceStatus();
 
-	return ret == 0 ? TRUE : FALSE;
-}
-*/
-
-BOOL CAgoraObject::EnableNetworkTest(BOOL bEnable)
-{
-	int ret = 0;
-
-/*	if (bEnable)
-		ret = m_lpAgoraEngineEx->enableNetworkTest();
-	else
-		ret = m_lpAgoraEngineEx->disableNetworkTest();
-*/
-	return ret == 0 ? TRUE : FALSE;
-}
 
 BOOL CAgoraObject::LocalVideoPreview(HWND hVideoWnd, BOOL bPreviewOn)
 {

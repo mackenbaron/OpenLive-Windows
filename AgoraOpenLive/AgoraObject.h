@@ -4,7 +4,7 @@
 //#include "../SDK/include/rtc_engine_i.h"
 #include "AGEngineEventHandler.h"
 
-#define AVC_VER _T("V1.5.1.10(Build216, 09/22/2016, SDK:1.5.1.10)")
+#define AVC_VER _T("V1.7.0(Build220, 09/228/2016, SDK:1.7.0)")
 
 // #define ENABLE_CODEC	1
 
@@ -71,19 +71,11 @@ public:
 	BOOL MuteLocalVideo(BOOL bMuted = TRUE);
 	BOOL IsLocalVideoMuted();
 
-//	BOOL SetVideoResolution(int nWidth, int nHeight);
-//	BOOL SetVideoMaxBitrate(int nBitrate);
-//	BOOL SetVideoMaxFrameRate(int nFrameRate);
-
-//	BOOL SetCodec(int nCodecType);
-//	int GetCodec() { return m_nCodecType; };
-
 	BOOL SetClientRole(int nIndex);
 	int GetClientRole() { return m_nRoleIndex; };
 	 
 	BOOL EnableAudioRecording(BOOL bEnable, LPCTSTR lpFilePath);
 
-	BOOL EnableNetworkTest(BOOL bEnable);
 
 	BOOL LocalVideoPreview(HWND hVideoWnd, BOOL bPreviewOn = TRUE);
 

@@ -68,6 +68,12 @@ public:
             ptr_->release();
         ptr_ = ptr;
     }
+    template<class C1, class C2>
+    void queryInterface(C1& c, C2 iid) {
+		pointer_type p;
+        if (!c.queryInterface(iid, (void**)&p))
+			reset(p);
+	}
 private:
     AutoPtr(const AutoPtr&);
     AutoPtr& operator=(const AutoPtr&);
@@ -94,6 +100,7 @@ enum INTERFACE_ID_TYPE
     AGORA_IID_AUDIO_DEVICE_MANAGER = 1,
     AGORA_IID_VIDEO_DEVICE_MANAGER = 2,
     AGORA_IID_RTC_ENGINE_PARAMETER = 3,
+    AGORA_IID_MEDIA_ENGINE = 4,
 };
 
 enum WARN_CODE_TYPE
@@ -104,6 +111,7 @@ enum WARN_CODE_TYPE
     WARN_LOOKUP_CHANNEL_REJECTED = 105,
     WARN_OPEN_CHANNEL_TIMEOUT = 106,
     WARN_OPEN_CHANNEL_REJECTED = 107,
+    WARN_AUDIO_MIXING_OPEN_ERROR = 701,
     WARN_ADM_RUNTIME_PLAYOUT_WARNING = 1014,
     WARN_ADM_RUNTIME_RECORDING_WARNING = 1016,
     WARN_ADM_RECORD_AUDIO_SILENCE = 1019,
@@ -138,11 +146,20 @@ enum ERROR_CODE_TYPE
     ERR_JOIN_CHANNEL_REJECTED = 17,
     ERR_LEAVE_CHANNEL_REJECTED = 18,
 	ERR_ALREADY_IN_USE = 19,
-    ERR_INVALID_VENDOR_KEY = 101,
+	ERR_ABORTED = 20,
+    ERR_INVALID_APP_ID = 101,
     ERR_INVALID_CHANNEL_NAME = 102,
-    ERR_DYNAMIC_KEY_TIMEOUT = 109,
-    ERR_INVALID_DYNAMIC_KEY = 110,
-    // sdk:vocs, vos, callmanager, peermanager: 101~1000
+    ERR_CHANNEL_KEY_EXPIRED = 109,
+    ERR_INVALID_CHANNEL_KEY = 110,
+	ERR_CONNECTION_INTERRUPTED = 111, // only used in web sdk
+	ERR_CONNECTION_LOST = 112, // only used in web sdk
+    ERR_DECRYPTION_FAILED = 120,
+
+    ERR_NOT_IN_CHANNEL = 113,
+    ERR_SIZE_TOO_LARGE = 114,
+	ERR_BITRATE_LIMIT = 115,
+	ERR_TOO_MANY_DATA_STREAMS = 116,
+	ERR_STREAM_MESSAGE_TIMEOUT = 117,
 
     //1001~2000
     ERR_LOAD_MEDIA_ENGINE = 1001,
@@ -168,6 +185,12 @@ enum ERROR_CODE_TYPE
   
     // VDM error code starts from 1500
     ERR_VDM_CAMERA_NOT_AUTHORIZED  = 1501,
+
+    // VCM error code starts from 1600
+    ERR_VCM_UNKNOWN_ERROR = 1600,
+    ERR_VCM_ENCODER_INIT_ERROR = 1601,
+    ERR_VCM_ENCODER_ENCODE_ERROR = 1602,
+    ERR_VCM_ENCODER_SET_ERROR = 1603,
 };
 
 enum LOG_FILTER_TYPE
@@ -197,7 +220,8 @@ enum MEDIA_ENGINE_EVENT_CODE_TYPE
     MEDIA_ENGINE_RECORDING_ERROR = 0,
     MEDIA_ENGINE_PLAYOUT_ERROR = 1,
     MEDIA_ENGINE_RECORDING_WARNING = 2,
-    MEDIA_ENGINE_PLAYOUT_WARNING = 3
+    MEDIA_ENGINE_PLAYOUT_WARNING = 3,
+    MEDIA_ENGINE_AUDIO_FILE_MIX_FINISH = 10
 };
 
 enum MEDIA_DEVICE_STATE_TYPE
@@ -237,58 +261,51 @@ enum RENDER_MODE_TYPE
 
 enum VIDEO_PROFILE_TYPE
 {                                   // res       fps  kbps
-    VIDEO_PROFILE_120P = 0,         // 160x120   15   80
-    VIDEO_PROFILE_120P_2 = 1,        // 120x160   15   80
-    VIDEO_PROFILE_120P_3 = 2,        // 120x120   15   60
-    VIDEO_PROFILE_180P = 10,        // 320x180   15   160
-    VIDEO_PROFILE_180P_2 = 11,        // 180x320   15   160
-    VIDEO_PROFILE_180P_3 = 12,        // 180x180   15   120
+    VIDEO_PROFILE_120P = 0,         // 160x120   15   65
+    VIDEO_PROFILE_120P_3 = 2,       // 120x120   15   50
+    VIDEO_PROFILE_180P = 10,        // 320x180   15   140
+    VIDEO_PROFILE_180P_3 = 12,      // 180x180   15   100
+    VIDEO_PROFILE_180P_4 = 13,      // 240x180   15   120
     VIDEO_PROFILE_240P = 20,        // 320x240   15   200
-    VIDEO_PROFILE_240P_2 = 21,        // 240x320   15   200
-    VIDEO_PROFILE_240P_3 = 22,        // 240x240   15   160
+    VIDEO_PROFILE_240P_3 = 22,      // 240x240   15   140
+    VIDEO_PROFILE_240P_4 = 23,      // 424x240   15   220
     VIDEO_PROFILE_360P = 30,        // 640x360   15   400
-    VIDEO_PROFILE_360P_2 = 31,        // 360x640   15   400
-    VIDEO_PROFILE_360P_3 = 32,        // 360x360   15   300
-    VIDEO_PROFILE_360P_4 = 33,        // 640x360   30   680
-    VIDEO_PROFILE_360P_5 = 34,        // 360x640   30   680
-    VIDEO_PROFILE_360P_6 = 35,        // 360x360   30  500
-    VIDEO_PROFILE_360P_7 = 36,        // 360x640   15   800
+    VIDEO_PROFILE_360P_3 = 32,      // 360x360   15   260
+    VIDEO_PROFILE_360P_4 = 33,      // 640x360   30   600
+    VIDEO_PROFILE_360P_6 = 35,      // 360x360   30   400
+    VIDEO_PROFILE_360P_7 = 36,      // 480x360   15   320
+    VIDEO_PROFILE_360P_8 = 37,      // 480x360   30   490
+    VIDEO_PROFILE_360P_9 = 38,      // 640x360   15   800
     VIDEO_PROFILE_480P = 40,        // 640x480   15   500
-    VIDEO_PROFILE_480P_2 = 41,        // 480x640   15   500
-    VIDEO_PROFILE_480P_3 = 42,        // 480x480   15   400
-    VIDEO_PROFILE_480P_4 = 43,        // 640x480   30   750
-    VIDEO_PROFILE_480P_5 = 44,        // 480x640   30   750
-    VIDEO_PROFILE_480P_6 = 45,        // 480x480   30   800
-	VIDEO_PROFILE_480P_7 = 46,		// 640x480 15 1000
-	VIDEO_PROFILE_720P = 50,        // 1280x720  15   1000
-    VIDEO_PROFILE_720P_2 = 51,        // 720x1280  15   1000
-    VIDEO_PROFILE_720P_3 = 52,        // 1280x720  30   1700
-    VIDEO_PROFILE_720P_4 = 53,        // 720x1280  30   1700
-    VIDEO_PROFILE_1080P = 60,        // 1920x1080 15   1500
-    VIDEO_PROFILE_1080P_2 = 61,        // 1080x1920 15   1500
-    VIDEO_PROFILE_1080P_3 = 62,        // 1920x1080 30   2550
-    VIDEO_PROFILE_1080P_4 = 63,        // 1080x1920 30   2550
-    VIDEO_PROFILE_1080P_5 = 64,        // 1920x1080 60   4300
-    VIDEO_PROFILE_1080P_6 = 65,        // 1080x1920 60   4300
-    VIDEO_PROFILE_4K = 70,            // 3840x2160 30   8000
-    VIDEO_PROFILE_4K_2 = 71,        // 2160x3080 30   8000
-    VIDEO_PROFILE_4K_3 = 72,        // 3840x2160 60   13600
-    VIDEO_PROFILE_4K_4 = 73,        // 2160x3840 60   13600
+    VIDEO_PROFILE_480P_3 = 42,      // 480x480   15   400
+    VIDEO_PROFILE_480P_4 = 43,      // 640x480   30   750
+    VIDEO_PROFILE_480P_6 = 45,      // 480x480   30   600
+    VIDEO_PROFILE_480P_8 = 47,		// 848x480   15   610
+    VIDEO_PROFILE_480P_9 = 48,		// 848x480   30   930
+    VIDEO_PROFILE_720P = 50,        // 1280x720  15   1130
+    VIDEO_PROFILE_720P_3 = 52,      // 1280x720  30   1710
+    VIDEO_PROFILE_720P_5 = 54,      // 960x720   15   910
+    VIDEO_PROFILE_720P_6 = 55,      // 960x720   30   1380
+    VIDEO_PROFILE_1080P = 60,       // 1920x1080 15   2080
+    VIDEO_PROFILE_1080P_3 = 62,     // 1920x1080 30   3150
+    VIDEO_PROFILE_1080P_5 = 64,     // 1920x1080 60   4780
+    VIDEO_PROFILE_1440P = 66,       // 2560x1440 30   4850
+    VIDEO_PROFILE_1440P_2 = 67,     // 2560x1440 60   7350
+    VIDEO_PROFILE_4K = 70,          // 3840x2160 30   8910
+    VIDEO_PROFILE_4K_3 = 72,        // 3840x2160 60   13500
     VIDEO_PROFILE_DEFAULT = VIDEO_PROFILE_360P,
 };
 
-enum APPLICATION_CATEGORY_TYPE
+enum CHANNEL_PROFILE_TYPE
 {
-	APPLICATION_CATEGORY_COMMUNICATION = 0,
-	APPLICATION_CATEGORY_LIVE_BROADCASTING = 1,
+	CHANNEL_PROFILE_COMMUNICATION = 0,
+	CHANNEL_PROFILE_LIVE_BROADCASTING = 1,
 };
 
 enum CLIENT_ROLE_TYPE
 {
     CLIENT_ROLE_BROADCASTER = 1,
     CLIENT_ROLE_AUDIENCE = 2,
-    CLIENT_ROLE_DUAL_STREAM_BROADCASTER = 3,
-    CLIENT_ROLE_DUAL_STREAM_AUDIENCE = 4,
 };
 
 enum USER_OFFLINE_REASON_TYPE
@@ -324,8 +341,6 @@ struct RtcStats
 
     unsigned short rxVideoKBitRate;
     unsigned short txVideoKBitRate;
-
-    unsigned int lastmileQuality;
     unsigned int users;
     double cpuAppUsage;
     double cpuTotalUsage;
@@ -550,6 +565,12 @@ public:
     }
 
     /**
+     * When audio mixing file playback finished, this function will be called
+     */
+    virtual void onAudioMixingFinished() {
+    }
+
+    /**
     * when the video device state changed(plugged or removed), the function will be called
     * @param [in] deviceId
     *        the ID of the state changed video device
@@ -566,15 +587,21 @@ public:
 
     /**
     * report the network quality
-    * @param [in] quality
-    *        the score of the network quality 0~5 the higher the better
-    */
-    virtual void onNetworkQuality(int quality) {
-        (void)quality;
+	* @param [in] uid
+	*        the UID of the remote user
+	* @param [in] txQuality
+    *        the score of the send network quality 0~5 the higher the better
+	* @param [in] rxQuality
+	*        the score of the recv network quality 0~5 the higher the better
+	*/
+    virtual void onNetworkQuality(uid_t uid, int txQuality, int rxQuality) {
+		(void)uid;
+		(void)txQuality;
+		(void)rxQuality;
     }
 
     /**
-    * report the lastmie test network quality
+    * report the last-mile test network quality
     * @param [in] quality
     *        the score of the network quality 0~5 the higher the better
     */
@@ -747,6 +774,42 @@ public:
     
     virtual void onRefreshRecordingServiceStatus(int status) {
         (void)status;
+    }
+
+//    virtual void onStreamError(int streamId, int code, int parameter, const char* message, size_t length) {}
+    /**
+    * when stream message received, the function will be called
+    * @param [in] uid
+    *        UID of the peer who sends the message
+    * @param [in] stream ID
+    *        APP can create multiple streams for sending messages of different purposes
+    * @param [in] data
+    *        the message data
+    * @param [in] length
+    *        the message length, in bytes
+    *        frame rate
+    */
+    virtual void onStreamMessage(uid_t uid, int streamId, const char* data, size_t length) {
+        (void)uid;
+        (void)streamId;
+        (void)data;
+        (void)length;
+    }
+
+	/**
+	* 
+	*/
+	virtual void onStreamMessageError(uid_t uid, int streamId, int code, int missed, int cached) {
+        (void)uid;
+        (void)streamId;
+        (void)code;
+        (void)missed;
+        (void)cached;
+    }
+
+    virtual void onMediaEngineLoadSuccess() {
+    }
+    virtual void onMediaEngineStartCallSuccess() {
     }
 };
 
@@ -985,12 +1048,10 @@ public:
 struct RtcEngineContext
 {
     IRtcEngineEventHandler* eventHandler;
-    const char* vendorKey;
-	APPLICATION_CATEGORY_TYPE applicationCategory;
+    const char* appId;
     RtcEngineContext()
     :eventHandler(NULL)
-    ,vendorKey(NULL)
-    ,applicationCategory(APPLICATION_CATEGORY_COMMUNICATION)
+    ,appId(NULL)
     {}
 };
 
@@ -1003,7 +1064,12 @@ public:
     */
     virtual void release() = 0;
 
-    /**
+	/**
+	* release the engine resource and return after all resources have been destroyed
+	*/
+	virtual void sync_release() = 0;
+	
+	/**
     * initialize the engine
     * @param [in] context
     *        the RTC engine context
@@ -1039,17 +1105,17 @@ public:
 
     /**
     * join the channel, if the channel have not been created, it will been created automatically
-  * @param [in] key
-    *        the vendor key, if you have initialized the engine with an available vendor key, it can be null here
-    * @param [in] channel
-    *        the channel number
+  * @param [in] channelKey
+    *        the channel key, if you have initialized the engine with an available APP ID, it can be null here. If you enable channel key on the dashboard, specify channel key here
+    * @param [in] channel name
+    *        the channel name
   * @param [in] info
     *        the additional information, it can be null here
     * @param [in] uid
     *        the uid of you, if 0 the system will automatically allocate one for you
     * @return return 0 if success or an error code
     */
-    virtual int joinChannel(const char* key, const char* channel, const char* info, uid_t uid) = 0;
+    virtual int joinChannel(const char* channelKey, const char* channelName, const char* info, uid_t uid) = 0;
 
     /**
     * leave the current channel
@@ -1058,13 +1124,13 @@ public:
     virtual int leaveChannel() = 0;
 
     /**
-    * renew the dynamic key for the current channel, it used for dynamic key only
-    * @param [in] key
-    *        the dynamic key get from the authenticate server
+    * renew the channel key for the current channel
+    * @param [in] channelKey
     * @return return 0 if success or an error code
     */
-    virtual int renewChannelDynamicKey(const char* key) = 0;
+    virtual int renewChannelKey(const char* channelKey) = 0;
 
+    virtual int setChannelProfile(CHANNEL_PROFILE_TYPE profile) = 0;
     virtual int setClientRole(CLIENT_ROLE_TYPE role) = 0;
 
     /**
@@ -1115,7 +1181,7 @@ public:
     */
     virtual int stopPreview() = 0;
 
-    virtual int setVideoProfile(VIDEO_PROFILE_TYPE profile) = 0;
+    virtual int setVideoProfile(VIDEO_PROFILE_TYPE profile, bool swapWidthAndHeight) = 0;
     /**
     * set the remote video canvas
     * @param [in] canvas
@@ -1151,15 +1217,25 @@ public:
     */
     virtual int registerPacketObserver(IPacketObserver* observer) = 0;
 
-	virtual int setVideoRenderFactory(void* factory) = 0;
-
 	/**
-	* Specifying encryption secret enables built-in AES-128 encryption. Leaving channel will clear the secret specified in last channel
+	* Specify encryption mode of AES encryption algorithm.
+	* @param [in] encryptionMode
+	*        encryption mode of AES algorithm, could be one of the following:
+	*          "aes-128-xts", "aes-256-xts".
+	*          The default value is "aes-128-xts". specify NULL value will use default encryption mode.
+	* @return return 0 if success or an error code
+	*/
+	virtual int setEncryptionMode(const char* encryptionMode) = 0;
+	/**
+	* Specify encryption secret enables built-in encryption function. Leaving channel will clear the secret specified in last channel
 	* @param [in] secret
 	*        secret to enable encryption
 	* @return return 0 if success or an error code
 	*/
 	virtual int setEncryptionSecret(const char* secret) = 0;
+
+    virtual int createDataStream(int* streamId, bool reliable, bool ordered) = 0;
+    virtual int sendStreamMessage(int streamId, const char* data, size_t length) = 0;
 };
 
 
@@ -1327,9 +1403,7 @@ class AAudioDeviceManager : public agora::util::AutoPtr<IAudioDeviceManager>
 public:
     AAudioDeviceManager(IRtcEngine& engine)
     {
-        IAudioDeviceManager* p;
-        if (!engine.queryInterface(AGORA_IID_AUDIO_DEVICE_MANAGER, (void**)&p))
-            reset(p);
+		queryInterface(engine, AGORA_IID_AUDIO_DEVICE_MANAGER);
     }
 };
 
@@ -1338,9 +1412,7 @@ class AVideoDeviceManager : public agora::util::AutoPtr<IVideoDeviceManager>
 public:
     AVideoDeviceManager(IRtcEngine& engine)
     {
-        IVideoDeviceManager* p;
-        if (!engine.queryInterface(AGORA_IID_VIDEO_DEVICE_MANAGER, (void**)&p))
-            reset(p);
+		queryInterface(engine, AGORA_IID_VIDEO_DEVICE_MANAGER);
     }
 };
 
@@ -1409,11 +1481,10 @@ public:
     int muteLocalVideoStream(bool mute) {
         return setParameters("{\"rtc.video.mute_me\":%s,\"che.video.local.send\":%s}", mute ? "true" : "false", mute ? "false" : "true");
     }
-
-    int enableLocalVideo(bool enabled) {
-        return setParameters("{\"rtc.video.capture\":%s,\"che.video.local.capture\":%s,\"che.video.local.render\":%s,\"che.video.local.send\":%s}", enabled ? "true" : "false", enabled ? "true" : "false", enabled ? "true" : "false", enabled ? "true" : "false");
-    }
-
+	
+	int enableLocalVideo(bool enabled) {
+		return setParameters("{\"rtc.video.capture\":%s,\"che.video.local.capture\":%s,\"che.video.local.render\":%s,\"che.video.local.send\":%s}", enabled ? "true" : "false", enabled ? "true" : "false", enabled ? "true" : "false", enabled ? "true" : "false");
+	}
     /**
     * mute/unmute all the remote video stream receiving
     * @param [in] mute
@@ -1597,9 +1668,7 @@ public:
         return m_parameter->setBool("che.video.stop_screen_capture", true);
     }
 #endif
-    
 
-    
     /**
     * set path to save the log file
     * @param [in] filePath
@@ -1647,16 +1716,20 @@ public:
         return setObject("che.video.render_mode", "{\"uid\":%u,\"mode\":%d}", uid, renderMode);
     }
     
-	int startRecordingService(const char* key) {
-		return m_parameter->setString("rtc.api.start_recording_service", key);
+	int startRecordingService(const char* recordingKey) {
+		return m_parameter->setString("rtc.api.start_recording_service", recordingKey);
     }
     
-    int stopRecordingService(const char* key) {
-        return m_parameter->setString("rtc.api.stop_recording_service", key);
+    int stopRecordingService(const char* recordingKey) {
+		return m_parameter->setString("rtc.api.stop_recording_service", recordingKey);
     }
     
     int refreshRecordingServiceStatus() {
         return m_parameter->setBool("rtc.api.query_recording_service_status", true);
+    }
+
+    int enableDualStreamMode(bool enabled) {
+        return m_parameter->setBool("rtc.dual_stream_mode", enabled);
     }
 
 protected:
@@ -1719,5 +1792,7 @@ AGORA_API agora::rtc::IRtcEngine* AGORA_CALL createAgoraRtcEngine();
 * @return returns the description of the error code
 */
 AGORA_API const char* AGORA_CALL getAgoraRtcEngineErrorDescription(int err);
+
+AGORA_API int AGORA_CALL setAgoraRtcEngineExternalSymbolLoader(void* (*func)(const char* symname));
 
 #endif

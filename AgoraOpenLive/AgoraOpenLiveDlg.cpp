@@ -144,7 +144,6 @@ BOOL CAgoraOpenLiveDlg::OnInitDialog()
 
 	// m_lpRtcEngineEx->setClientRole(agora::rtc::CLIENT_ROLE_DUAL_STREAM_AUDIENCE);
 	m_lpAgoraObject->SetLogFilePath(NULL);
-	m_lpAgoraObject->EnableNetworkTest(TRUE);
 	m_lpAgoraObject->SetMsgHandlerWnd(GetSafeHwnd());
 	CAgoraObject::GetAgoraObject()->SetClientRole(0);
 
@@ -342,7 +341,7 @@ LRESULT CAgoraOpenLiveDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	vc.view = m_dlgVideo.GetLocalVideoWnd();
 	vc.renderMode = RENDER_MODE_TYPE::RENDER_MODE_FIT;
 
-    CAgoraObject::GetEngine()->setVideoProfile((VIDEO_PROFILE_TYPE)m_nVideoProfile);
+    CAgoraObject::GetEngine()->setVideoProfile((VIDEO_PROFILE_TYPE)m_nVideoProfile, m_dlgSetup.IsWHSwap());
 	lpAgoraObject->EnableVideo(TRUE);
 
 	m_dlgVideo.SetWindowText(strChannelName);

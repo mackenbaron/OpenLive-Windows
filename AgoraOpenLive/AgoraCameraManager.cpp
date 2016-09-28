@@ -19,7 +19,7 @@ BOOL CAgoraCameraManager::Create(IRtcEngine *lpRtcEngine)
 //	lpRtcEngine->enableVideo();
 
 	m_ptrDeviceManager = new AVideoDeviceManager(*lpRtcEngine);
-	if (m_ptrDeviceManager == NULL)
+	if (m_ptrDeviceManager->get() == NULL)
 		return FALSE;
 
 	m_lpCollection = (*m_ptrDeviceManager)->enumerateVideoDevices();

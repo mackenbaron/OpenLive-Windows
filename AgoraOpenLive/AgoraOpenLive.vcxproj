@@ -165,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="IDB_TIP_VIDEO.BMP" />
+    <Image Include="res\AgoraOpenLive.ico" />
     <Image Include="res\AgoraVideoCall.ico" />
     <Image Include="res\IDB_BACKGROUND_VIDEO.bmp" />
     <Image Include="res\IDB_BTNAUDIO_VIDEO.bmp" />
@@ -229,7 +230,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties _x007B_8856F961-340A-11D0-A96B-00C04FD705A2_x007D_="CWriteboard_video" RESOURCE_FILE="AgoraVideoCall.rc" />
+      <UserProperties _x007B_8856F961-340A-11D0-A96B-00C04FD705A2_x007D_="CWriteboard_video" RESOURCE_FILE="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
