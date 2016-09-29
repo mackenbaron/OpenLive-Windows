@@ -17,6 +17,8 @@ public:
 	CString GetChannelName();
 
 	void SetVideoString(LPCTSTR lpVideoString);
+	void SetDauleStream(BOOL bEnable);
+	BOOL IsDauleStream();
 
 // 对话框数据
 	enum { IDD = IDD_ENTERCHANNEL_DIALOG };
@@ -41,7 +43,9 @@ protected:
 private:
 	CAGEdit			m_ctrChannel;
 //	CAGEdit			m_ctrEncKey;
-	CAGButton		m_btnTest;
+    CButton         m_ckEnableDualStream;
+
+    CAGButton		m_btnTest;
 	CAGButton		m_btnJoin;
 	CAGButton		m_btnSetup;
 
@@ -53,4 +57,5 @@ private:
 	CDeviceDlg		m_dlgDevice;
 
 	CComboBox		m_ctrRole;
+    
 };

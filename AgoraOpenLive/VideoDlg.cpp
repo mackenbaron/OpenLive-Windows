@@ -669,7 +669,7 @@ void CVideoDlg::InitCtrls()
 	m_btnEndCall.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNENDCALL_VIDEO);
 	m_cbxRole.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXROLE_VIDEO);
 
-	for (int nIndex = 0; nIndex < 4; nIndex++) {
+	for (int nIndex = 0; nIndex < 2; nIndex++) {
 		CStringA str;
 
 		str.Format("IDS_CHN_ROLE%d", nIndex);
@@ -754,6 +754,7 @@ void CVideoDlg::ShowVideo1()
 		m_wndVideo[0].ShowWindow(SW_SHOW);
 		m_wndVideo[0].SetBigShowFlag(TRUE);
 		m_wndVideo[0].SetParent(this);
+		CAgoraObject::GetAgoraObject()->SetRemoteStreamType(m_wndVideo[0].GetUID(), REMOTE_VIDEO_STREAM_HIGH);
 
 		m_wndLocal.MoveWindow(&m_rcChildVideoArea, FALSE);
 		m_wndLocal.SetParent(&m_wndVideo[0]);
@@ -774,6 +775,8 @@ void CVideoDlg::ShowVideo4()
 		m_wndVideo[nIndex].ShowWindow(SW_SHOW);
 		m_wndVideo[nIndex].SetBigShowFlag(FALSE);
 		m_wndVideo[nIndex].SetParent(this);
+
+		CAgoraObject::GetAgoraObject()->SetRemoteStreamType(m_wndVideo[nIndex].GetUID(), REMOTE_VIDEO_STREAM_HIGH);
 	}
 
 	m_wndVideo[0].MoveWindow(0, m_rcVideoArea.top, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
@@ -817,6 +820,9 @@ void CVideoDlg::ShowMulti()
 	m_lpBigShowed->MoveWindow(&m_rcVideoArea, TRUE);
 	m_lpBigShowed->SetParent(this);
 	m_lpBigShowed->SetBigShowFlag(TRUE);
+
+	if (m_lpBigShowed->GetUID() != 0)
+		CAgoraObject::GetAgoraObject()->SetRemoteStreamType(m_lpBigShowed->GetUID(), REMOTE_VIDEO_STREAM_HIGH);
 	
 	for (int nIndex = 0; nIndex < 4; nIndex++) {
 		int nXPos = (m_rcVideoArea.Width() / 2) - 402 + (204 * nLocalIndex);
@@ -827,6 +833,7 @@ void CVideoDlg::ShowMulti()
 				m_wndVideo[nIndex].MoveWindow(nXPos, nYPos, 192, 144, TRUE);
 				m_wndVideo[nIndex].ShowWindow(SW_SHOW);
 				m_wndVideo[nIndex].SetParent(m_lpBigShowed);
+				CAgoraObject::GetAgoraObject()->SetRemoteStreamType(m_wndVideo[nIndex].GetUID(), REMOTE_VIDEO_STREAM_LOW);
 				nLocalIndex++;
 			}
 		}

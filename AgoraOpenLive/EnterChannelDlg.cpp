@@ -25,12 +25,13 @@ CEnterChannelDlg::~CEnterChannelDlg()
 
 void CEnterChannelDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDCHNAME_CHANNEL, m_ctrChannel);
-	DDX_Control(pDX, IDC_BTNTEST_CHANNEL, m_btnTest);
-	DDX_Control(pDX, IDC_BTNJOIN_CHANNEL, m_btnJoin);
-	DDX_Control(pDX, IDC_BTNSET_CHANNEL, m_btnSetup);
-	DDX_Control(pDX, IDC_CMBROLE_CHANNEL, m_ctrRole);
+    CDialogEx::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_EDCHNAME_CHANNEL, m_ctrChannel);
+    DDX_Control(pDX, IDC_BTNTEST_CHANNEL, m_btnTest);
+    DDX_Control(pDX, IDC_BTNJOIN_CHANNEL, m_btnJoin);
+    DDX_Control(pDX, IDC_BTNSET_CHANNEL, m_btnSetup);
+    DDX_Control(pDX, IDC_CMBROLE_CHANNEL, m_ctrRole);
+    DDX_Control(pDX, IDC_CKENABLEDUL_CHANNEL, m_ckEnableDualStream);
 }
 
 
@@ -95,17 +96,19 @@ void CEnterChannelDlg::InitCtrls()
 
 	m_ctrRole.MoveWindow(ClientRect.Width() / 2 - 150, ClientRect.Height() - 200, 300, 48, TRUE);
 	m_ctrRole.SetFont(&m_ftDesc);
-	for (int nIndex = 0; nIndex < 4; nIndex++) {
+	for (int nIndex = 0; nIndex < 2; nIndex++) {
 		CStringA str;
 
 		str.Format("IDS_CHN_ROLE%d", nIndex);
 		m_ctrRole.InsertString(nIndex, LANG_STR(str));
 	}
 	m_ctrRole.SetCurSel(0);
+	m_ckEnableDualStream.MoveWindow(ClientRect.Width() / 2 - 150, ClientRect.Height() - 165, 16, 16, TRUE);
+	m_ckEnableDualStream.SetCheck(TRUE);
 
-	m_btnTest.MoveWindow(ClientRect.Width()/2-150, ClientRect.Height() - 145, 144, 48, TRUE);
-	m_btnJoin.MoveWindow(ClientRect.Width()/2+6, ClientRect.Height()-145, 144, 48, TRUE);
-	m_btnSetup.MoveWindow(ClientRect.Width()/2-150, ClientRect.Height()-58, 300, 48, TRUE);
+	m_btnTest.MoveWindow(ClientRect.Width()/2-150, ClientRect.Height() - 130, 144, 40, TRUE);
+	m_btnJoin.MoveWindow(ClientRect.Width()/2+6, ClientRect.Height()-130, 144, 40, TRUE);
+	m_btnSetup.MoveWindow(ClientRect.Width()/2-150, ClientRect.Height()-58, 300, 40, TRUE);
 
 	m_btnTest.SetBackColor(RGB(0, 160, 239), RGB(0, 160, 239), RGB(0, 160, 239), RGB(192, 192, 192));
 	m_btnTest.SetFont(&m_ftBtn);
@@ -152,6 +155,9 @@ void CEnterChannelDlg::DrawClient(CDC *lpDC)
 	lpDC->SelectObject(&m_ftDesc);
 	lpString = LANG_STR("IDS_CHN_ROLETITLE");
 	lpDC->TextOut(12, 230, lpString);
+
+	lpString = LANG_STR("IDS_CHN_CKENDAUL");
+	lpDC->TextOut(28, 285, lpString);
 
 	lpDC->SelectObject(&m_ftDesc);
 	lpDC->SetTextColor(RGB(0x91, 0x96, 0xA0));
@@ -212,4 +218,14 @@ CString CEnterChannelDlg::GetChannelName()
 void CEnterChannelDlg::SetVideoString(LPCTSTR lpVideoString)
 {
 	m_btnSetup.SetWindowText(lpVideoString);
+}
+
+void CEnterChannelDlg::SetDauleStream(BOOL bEnable)
+{
+	m_ckEnableDualStream.SetCheck(bEnable);
+}
+
+BOOL CEnterChannelDlg::IsDauleStream()
+{
+	return (BOOL)m_ckEnableDualStream.GetCheck();
 }

@@ -52,7 +52,6 @@ CAgoraOpenLiveDlg::CAgoraOpenLiveDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
-    m_nVideoProfile = 0;
 	m_lpAgoraObject = NULL;
 	m_lpRtcEngine = NULL;
 
@@ -305,7 +304,7 @@ LRESULT CAgoraOpenLiveDlg::OnBackPage(WPARAM wParam, LPARAM lParam)
 		m_lpCurDialog = &m_dlgEnterChannel;
 	}
 
-    m_nVideoProfile = m_dlgSetup.GetVideoSolution();
+    
     m_dlgEnterChannel.SetVideoString(m_dlgSetup.GetVideoSolutionDes());
 
 	m_lpCurDialog->ShowWindow(SW_SHOW);
@@ -341,8 +340,11 @@ LRESULT CAgoraOpenLiveDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	vc.view = m_dlgVideo.GetLocalVideoWnd();
 	vc.renderMode = RENDER_MODE_TYPE::RENDER_MODE_FIT;
 
-    CAgoraObject::GetEngine()->setVideoProfile((VIDEO_PROFILE_TYPE)m_nVideoProfile, m_dlgSetup.IsWHSwap());
+    CAgoraObject::GetEngine()->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
+	CAgoraObject::GetEngine()->setVideoProfile((VIDEO_PROFILE_TYPE)m_dlgSetup.GetVideoSolution(), m_dlgSetup.IsWHSwap());
+
 	lpAgoraObject->EnableVideo(TRUE);
+	CAgoraObject::GetAgoraObject()->EnableDauleStream(m_dlgEnterChannel.IsDauleStream());
 
 	m_dlgVideo.SetWindowText(strChannelName);
 	lpRtcEngine->setupLocalVideo(vc);

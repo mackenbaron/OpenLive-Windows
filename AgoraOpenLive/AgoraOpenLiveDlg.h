@@ -74,6 +74,5 @@ private:
 	IRtcEngine		*m_lpRtcEngine;
 
 private:	// data
-    int m_nVideoProfile;
 	int m_nNetworkQuality;
 };

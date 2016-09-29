@@ -4,7 +4,7 @@
 //#include "../SDK/include/rtc_engine_i.h"
 #include "AGEngineEventHandler.h"
 
-#define AVC_VER _T("V1.7.0(Build220, 09/228/2016, SDK:1.7.0)")
+#define AVC_VER _T("V1.7.0(Build223, 09/228/2016, SDK:1.7.0)")
 
 // #define ENABLE_CODEC	1
 
@@ -25,8 +25,8 @@ using namespace agora::rtc;
 #define AG_CODEC_EVP	0x00000001
 #define AG_CODEC_VP8	0x00000002
 
-#define VENDOR_KEY _T("")
-
+//#define VENDOR_KEY _T("")
+#define VENDOR_KEY _T("f4637604af81440596a54254d53ade20")
 class CAgoraObject
 {
 public:
@@ -76,6 +76,9 @@ public:
 	 
 	BOOL EnableAudioRecording(BOOL bEnable, LPCTSTR lpFilePath);
 
+	BOOL EnableDauleStream(BOOL bEnable);
+
+	BOOL SetRemoteStreamType(UINT nUID, REMOTE_VIDEO_STREAM_TYPE nType);
 
 	BOOL LocalVideoPreview(HWND hVideoWnd, BOOL bPreviewOn = TRUE);
 

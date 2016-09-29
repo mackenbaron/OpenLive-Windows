@@ -419,6 +419,23 @@ BOOL CAgoraObject::EnableAudioRecording(BOOL bEnable, LPCTSTR lpFilePath)
 	return ret == 0 ? TRUE : FALSE;
 }
 
+BOOL CAgoraObject::EnableDauleStream(BOOL bEnable)
+{
+	RtcEngineParameters rep(*m_lpAgoraEngine);
+
+	int nRet = rep.enableDualStreamMode(bEnable);
+
+	return nRet == 0 ? TRUE : FALSE;
+}
+
+BOOL CAgoraObject::SetRemoteStreamType(UINT nUID, REMOTE_VIDEO_STREAM_TYPE nType)
+{
+	RtcEngineParameters rep(*m_lpAgoraEngine);
+
+	int nRet = rep.setRemoteVideoStreamType(nUID, nType);
+
+	return nRet == 0 ? TRUE : FALSE;
+}
 
 BOOL CAgoraObject::LocalVideoPreview(HWND hVideoWnd, BOOL bPreviewOn)
 {
