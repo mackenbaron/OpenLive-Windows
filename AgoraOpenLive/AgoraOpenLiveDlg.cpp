@@ -80,7 +80,7 @@ BEGIN_MESSAGE_MAP(CAgoraOpenLiveDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BTNMIN, &CAgoraOpenLiveDlg::OnBnClickedBtnmin)
     ON_BN_CLICKED(IDC_BTNCLOSE, &CAgoraOpenLiveDlg::OnBnClickedBtnclose)
 
-    ON_MESSAGE(WM_MSGID(EID_NETWORK_QUALITY), &CAgoraOpenLiveDlg::OnNetworkQuality)
+	ON_MESSAGE(WM_MSGID(EID_LASTMILE_QUALITY), &CAgoraOpenLiveDlg::OnLastmileQuality)
 
 END_MESSAGE_MAP()
 
@@ -136,13 +136,14 @@ BOOL CAgoraOpenLiveDlg::OnInitDialog()
 	m_lpAgoraObject = CAgoraObject::GetAgoraObject(VENDOR_KEY);
 	m_lpRtcEngine = CAgoraObject::GetEngine();
 
-    if (_tcslen(VENDOR_KEY) == 0) {
-        MessageBox(_T("请在源码VENDOR_KEY宏定义中填上自己的KEY"), _T("提示"), MB_ICONINFORMATION);
-        PostQuitMessage(0);
-    }
+//    if (_tcslen(VENDOR_KEY) == 0) {
+//        MessageBox(_T("请在源码VENDOR_KEY宏定义中填上自己的KEY"), _T("提示"), MB_ICONINFORMATION);
+//        PostQuitMessage(0);
+//    }
 
 	// m_lpRtcEngineEx->setClientRole(agora::rtc::CLIENT_ROLE_DUAL_STREAM_AUDIENCE);
 	m_lpAgoraObject->SetLogFilePath(NULL);
+	m_lpAgoraObject->EnableNetworkTest(TRUE);
 	m_lpAgoraObject->SetMsgHandlerWnd(GetSafeHwnd());
 	CAgoraObject::GetAgoraObject()->SetClientRole(0);
 
@@ -365,9 +366,9 @@ LRESULT CAgoraOpenLiveDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CAgoraOpenLiveDlg::OnNetworkQuality(WPARAM wParam, LPARAM lParam)
+LRESULT CAgoraOpenLiveDlg::OnLastmileQuality(WPARAM wParam, LPARAM lParam)
 {
-	LPAGE_NETWORK_QUALITY lpData = (LPAGE_NETWORK_QUALITY)wParam;
+	LPAGE_LASTMILE_QUALITY lpData = (LPAGE_LASTMILE_QUALITY)wParam;
 
 	if (m_nNetworkQuality != lpData->quality) {
 		m_nNetworkQuality = lpData->quality;

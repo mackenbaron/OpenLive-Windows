@@ -203,8 +203,6 @@ BOOL CAgoraObject::SetLogFilePath(LPCTSTR lpLogPath)
 BOOL CAgoraObject::JoinChannel(LPCTSTR lpChannelName, UINT nUID)
 {
 	int nRet = 0;
-
-//	m_lpAgoraEngine->setVideoProfile(VIDEO_PROFILE_720P);
 	
 #ifdef UNICODE
 	CHAR szChannelName[128];
@@ -426,6 +424,18 @@ BOOL CAgoraObject::EnableDauleStream(BOOL bEnable)
 	int nRet = rep.enableDualStreamMode(bEnable);
 
 	return nRet == 0 ? TRUE : FALSE;
+}
+
+BOOL CAgoraObject::EnableNetworkTest(BOOL bEnable)
+{
+	int ret = 0;
+
+	if (bEnable)
+		ret = m_lpAgoraEngine->enableLastmileTest();
+	else
+		ret = m_lpAgoraEngine->disableLastmileTest();
+
+	return ret == 0 ? TRUE : FALSE;
 }
 
 BOOL CAgoraObject::SetRemoteStreamType(UINT nUID, REMOTE_VIDEO_STREAM_TYPE nType)
