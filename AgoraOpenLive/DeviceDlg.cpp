@@ -190,41 +190,42 @@ void CDeviceDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	CString strDeviceID;
 	CString strCurID;
 
-	m_agPlayout.Create(m_lpRtcEngine);
-	m_agAudioin.Create(m_lpRtcEngine);
-	m_agCamera.Create(m_lpRtcEngine);
+	if (m_agPlayout.Create(m_lpRtcEngine)){
+		m_sldAOutVol.SetPos(m_agPlayout.GetVolume());
+		m_cbxAOut.ResetContent();
+		strCurID = m_agPlayout.GetCurDeviceID();
+		for (UINT nIndex = 0; nIndex < m_agPlayout.GetDeviceCount(); nIndex++){
+			m_agPlayout.GetDevice(nIndex, strDeviceName, strDeviceID);
+			m_cbxAOut.InsertString(nIndex, strDeviceName);
 
-	m_sldAOutVol.SetPos(m_agPlayout.GetVolume());
-	m_sldAInVol.SetPos(m_agAudioin.GetVolume());
-
-	m_cbxAOut.ResetContent();
-	strCurID = m_agPlayout.GetCurDeviceID();
-	for (UINT nIndex = 0; nIndex < m_agPlayout.GetDeviceCount(); nIndex++){
-		m_agPlayout.GetDevice(nIndex, strDeviceName, strDeviceID);
-		m_cbxAOut.InsertString(nIndex, strDeviceName);
-
-		if (strCurID == strDeviceID)
-			m_cbxAOut.SetCurSel(nIndex);
+			if (strCurID == strDeviceID)
+				m_cbxAOut.SetCurSel(nIndex);
+		}
 	}
 
-	m_cbxAIn.ResetContent();
-	strCurID = m_agAudioin.GetCurDeviceID();
-	for (UINT nIndex = 0; nIndex < m_agAudioin.GetDeviceCount(); nIndex++){
-		m_agAudioin.GetDevice(nIndex, strDeviceName, strDeviceID);
-		m_cbxAIn.InsertString(nIndex, strDeviceName);
+	if (m_agAudioin.Create(m_lpRtcEngine)){
+		m_sldAInVol.SetPos(m_agAudioin.GetVolume());
+		m_cbxAIn.ResetContent();
+		strCurID = m_agAudioin.GetCurDeviceID();
+		for (UINT nIndex = 0; nIndex < m_agAudioin.GetDeviceCount(); nIndex++){
+			m_agAudioin.GetDevice(nIndex, strDeviceName, strDeviceID);
+			m_cbxAIn.InsertString(nIndex, strDeviceName);
 
-		if (strCurID == strDeviceID)
-			m_cbxAIn.SetCurSel(nIndex);
+			if (strCurID == strDeviceID)
+				m_cbxAIn.SetCurSel(nIndex);
+		}
 	}
 
-	m_cbxCam.ResetContent();
-	strCurID = m_agCamera.GetCurDeviceID();
-	for (UINT nIndex = 0; nIndex < m_agCamera.GetDeviceCount(); nIndex++){
-		m_agCamera.GetDevice(nIndex, strDeviceName, strDeviceID);
-		m_cbxCam.InsertString(nIndex, strDeviceName);
+	if (m_agCamera.Create(m_lpRtcEngine)) {
+		m_cbxCam.ResetContent();
+		strCurID = m_agCamera.GetCurDeviceID();
+		for (UINT nIndex = 0; nIndex < m_agCamera.GetDeviceCount(); nIndex++){
+			m_agCamera.GetDevice(nIndex, strDeviceName, strDeviceID);
+			m_cbxCam.InsertString(nIndex, strDeviceName);
 
-		if (strCurID == strDeviceID)
-			m_cbxCam.SetCurSel(nIndex);
+			if (strCurID == strDeviceID)
+				m_cbxCam.SetCurSel(nIndex);
+		}
 	}
 }
 
