@@ -1134,7 +1134,7 @@ public:
     virtual int renewChannelKey(const char* channelKey) = 0;
 
     virtual int setChannelProfile(CHANNEL_PROFILE_TYPE profile) = 0;
-    virtual int setClientRole(CLIENT_ROLE_TYPE role, const char* roleKey) = 0;
+    virtual int setClientRole(CLIENT_ROLE_TYPE role, const char* permissionKey) = 0;
 
     /**
     * start the echo testing, if every thing goes well you can hear your echo from the server

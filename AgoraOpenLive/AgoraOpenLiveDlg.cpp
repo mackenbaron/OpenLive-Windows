@@ -146,7 +146,6 @@ BOOL CAgoraOpenLiveDlg::OnInitDialog()
 	m_lpAgoraObject->EnableNetworkTest(TRUE);
 	m_lpAgoraObject->SetMsgHandlerWnd(GetSafeHwnd());
 	CAgoraObject::GetAgoraObject()->SetClientRole(0);
-	m_lpAgoraObject->EnableVideo(TRUE);
 
 	SetBackgroundImage(IDB_DLG_MAIN);
 	InitCtrls();
@@ -344,6 +343,7 @@ LRESULT CAgoraOpenLiveDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
     CAgoraObject::GetEngine()->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
 	CAgoraObject::GetEngine()->setVideoProfile((VIDEO_PROFILE_TYPE)m_dlgSetup.GetVideoSolution(), m_dlgSetup.IsWHSwap());
+	m_lpAgoraObject->EnableVideo(TRUE);
 
 	CAgoraObject::GetAgoraObject()->EnableDauleStream(m_dlgEnterChannel.IsDauleStream());
 
