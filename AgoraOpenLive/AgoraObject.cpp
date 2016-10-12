@@ -378,13 +378,13 @@ BOOL CAgoraObject::SetClientRole(int nIndex)
 	switch (nIndex)
 	{
 	case 0:
-		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
+		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_BROADCASTER, NULL);
 		break;
 	case 1:
-		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_AUDIENCE);
+		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_AUDIENCE, NULL);
 		break;
 	default:
-		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
+		nRet = m_lpAgoraEngine->setClientRole(CLIENT_ROLE_BROADCASTER, NULL);
 		nIndex = 0;
 		break;
 	}

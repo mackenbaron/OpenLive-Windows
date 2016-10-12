@@ -133,19 +133,20 @@ BOOL CAgoraOpenLiveDlg::OnInitDialog()
 	m_ftLink.CreateFont(18, 0, 0, 0, FW_BOLD, FALSE, TRUE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
 	m_ftVer.CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
 
-	m_lpAgoraObject = CAgoraObject::GetAgoraObject(VENDOR_KEY);
+	m_lpAgoraObject = CAgoraObject::GetAgoraObject(APP_ID);
 	m_lpRtcEngine = CAgoraObject::GetEngine();
 
-//    if (_tcslen(VENDOR_KEY) == 0) {
-//        MessageBox(_T("请在源码VENDOR_KEY宏定义中填上自己的KEY"), _T("提示"), MB_ICONINFORMATION);
-//        PostQuitMessage(0);
-//    }
+    if (_tcslen(APP_ID) == 0) {
+        MessageBox(_T("请在源码APP_ID宏定义中填上自己的ID"), _T("提示"), MB_ICONINFORMATION);
+        PostQuitMessage(0);
+    }
 
 	// m_lpRtcEngineEx->setClientRole(agora::rtc::CLIENT_ROLE_DUAL_STREAM_AUDIENCE);
 	m_lpAgoraObject->SetLogFilePath(NULL);
 	m_lpAgoraObject->EnableNetworkTest(TRUE);
 	m_lpAgoraObject->SetMsgHandlerWnd(GetSafeHwnd());
 	CAgoraObject::GetAgoraObject()->SetClientRole(0);
+	m_lpAgoraObject->EnableVideo(TRUE);
 
 	SetBackgroundImage(IDB_DLG_MAIN);
 	InitCtrls();
@@ -344,7 +345,6 @@ LRESULT CAgoraOpenLiveDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     CAgoraObject::GetEngine()->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
 	CAgoraObject::GetEngine()->setVideoProfile((VIDEO_PROFILE_TYPE)m_dlgSetup.GetVideoSolution(), m_dlgSetup.IsWHSwap());
 
-	lpAgoraObject->EnableVideo(TRUE);
 	CAgoraObject::GetAgoraObject()->EnableDauleStream(m_dlgEnterChannel.IsDauleStream());
 
 	m_dlgVideo.SetWindowText(strChannelName);

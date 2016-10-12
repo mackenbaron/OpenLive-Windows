@@ -111,6 +111,7 @@ enum WARN_CODE_TYPE
     WARN_LOOKUP_CHANNEL_REJECTED = 105,
     WARN_OPEN_CHANNEL_TIMEOUT = 106,
     WARN_OPEN_CHANNEL_REJECTED = 107,
+
     WARN_AUDIO_MIXING_OPEN_ERROR = 701,
     WARN_ADM_RUNTIME_PLAYOUT_WARNING = 1014,
     WARN_ADM_RUNTIME_RECORDING_WARNING = 1016,
@@ -121,6 +122,8 @@ enum WARN_CODE_TYPE
 
     // sdk: 100~1000
     WARN_SWITCH_LIVE_VIDEO_TIMEOUT = 111,
+	WARN_SET_CLIENT_ROLE_TIMEOUT = 118,
+    WARN_SET_CLIENT_ROLE_NOT_AUTHORIZED = 119,
 };
 
 enum ERROR_CODE_TYPE
@@ -1131,7 +1134,7 @@ public:
     virtual int renewChannelKey(const char* channelKey) = 0;
 
     virtual int setChannelProfile(CHANNEL_PROFILE_TYPE profile) = 0;
-    virtual int setClientRole(CLIENT_ROLE_TYPE role) = 0;
+    virtual int setClientRole(CLIENT_ROLE_TYPE role, const char* roleKey) = 0;
 
     /**
     * start the echo testing, if every thing goes well you can hear your echo from the server
