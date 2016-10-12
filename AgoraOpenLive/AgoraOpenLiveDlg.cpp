@@ -136,10 +136,10 @@ BOOL CAgoraOpenLiveDlg::OnInitDialog()
 	m_lpAgoraObject = CAgoraObject::GetAgoraObject(APP_ID);
 	m_lpRtcEngine = CAgoraObject::GetEngine();
 
-    if (_tcslen(APP_ID) == 0) {
-        MessageBox(_T("请在源码APP_ID宏定义中填上自己的ID"), _T("提示"), MB_ICONINFORMATION);
-        PostQuitMessage(0);
-    }
+	if (_tcslen(APP_ID) == 0) {
+       MessageBox(_T("Please define your own APP_ID in source code"), _T("information"), MB_ICONINFORMATION);
+       PostQuitMessage(0);
+   }
 
 	// m_lpRtcEngineEx->setClientRole(agora::rtc::CLIENT_ROLE_DUAL_STREAM_AUDIENCE);
 	m_lpAgoraObject->SetLogFilePath(NULL);
