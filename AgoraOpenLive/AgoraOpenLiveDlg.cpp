@@ -146,6 +146,7 @@ BOOL CAgoraOpenLiveDlg::OnInitDialog()
 	m_lpAgoraObject->EnableNetworkTest(TRUE);
 	m_lpAgoraObject->SetMsgHandlerWnd(GetSafeHwnd());
 	CAgoraObject::GetAgoraObject()->SetClientRole(0);
+	m_lpRtcEngine->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
 
 	SetBackgroundImage(IDB_DLG_MAIN);
 	InitCtrls();
