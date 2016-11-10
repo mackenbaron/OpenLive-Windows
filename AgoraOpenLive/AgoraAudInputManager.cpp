@@ -128,7 +128,7 @@ BOOL CAgoraAudInputManager::SetCurDevice(LPCTSTR lpDeviceID)
 
 #ifdef UNICODE
 	CHAR szDeviceID[128];
-	::WideCharToMultiByte(CP_ACP, 0, lpDeviceID, -1, szDeviceID, 128, NULL, NULL);
+	::WideCharToMultiByte(CP_UTF8, 0, lpDeviceID, -1, szDeviceID, 128, NULL, NULL);
 	int nRet = (*m_ptrDeviceManager)->setRecordingDevice(szDeviceID);
 #else
 	int nRet = (*m_ptrDeviceManager)->setRecordingDevice(lpDeviceID);
