@@ -3,7 +3,7 @@
 //
 
 #include "stdafx.h"
-#include "AgoraOpenLive.h"
+#include "AgoraOPenLive.h"
 #include "AgoraOpenLiveDlg.h"
 #include "afxdialogex.h"
 
@@ -52,6 +52,7 @@ CAgoraOpenLiveDlg::CAgoraOpenLiveDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
+    m_nVideoProfile = 0;
 	m_lpAgoraObject = NULL;
 	m_lpRtcEngine = NULL;
 
@@ -80,8 +81,9 @@ BEGIN_MESSAGE_MAP(CAgoraOpenLiveDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BTNMIN, &CAgoraOpenLiveDlg::OnBnClickedBtnmin)
     ON_BN_CLICKED(IDC_BTNCLOSE, &CAgoraOpenLiveDlg::OnBnClickedBtnclose)
 
-	ON_MESSAGE(WM_MSGID(EID_LASTMILE_QUALITY), &CAgoraOpenLiveDlg::OnLastmileQuality)
+    ON_MESSAGE(WM_MSGID(EID_NETWORK_QUALITY), &CAgoraOpenLiveDlg::OnNetworkQuality)
 
+    ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -130,23 +132,24 @@ BOOL CAgoraOpenLiveDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 	m_ftTitle.CreateFont(16, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
-	m_ftLink.CreateFont(18, 0, 0, 0, FW_BOLD, FALSE, TRUE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
+	m_ftLink.CreateFont(16, 0, 0, 0, FW_BOLD, FALSE, TRUE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
 	m_ftVer.CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
 
-	m_lpAgoraObject = CAgoraObject::GetAgoraObject(APP_ID);
+	m_lpAgoraObject = CAgoraObject::GetAgoraObject(VENDOR_KEY);
 	m_lpRtcEngine = CAgoraObject::GetEngine();
+   
 
-	if (_tcslen(APP_ID) == 0) {
-       MessageBox(_T("Please define your own APP_ID in source code"), _T("information"), MB_ICONINFORMATION);
-       PostQuitMessage(0);
-   }
+    if (_tcslen(VENDOR_KEY) == 0) {
+        MessageBox(_T("请在源码VENDOR_KEY宏定义中填上自己的KEY"), _T("提示"), MB_ICONINFORMATION);
+        PostQuitMessage(0);
+    }
 
-	// m_lpRtcEngineEx->setClientRole(agora::rtc::CLIENT_ROLE_DUAL_STREAM_AUDIENCE);
 	m_lpAgoraObject->SetLogFilePath(NULL);
 	m_lpAgoraObject->EnableNetworkTest(TRUE);
 	m_lpAgoraObject->SetMsgHandlerWnd(GetSafeHwnd());
+	CAgoraObject::GetEngine()->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
 	CAgoraObject::GetAgoraObject()->SetClientRole(0);
-	m_lpRtcEngine->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
+	CAgoraObject::GetAgoraObject()->EnableVideo(TRUE);
 
 	SetBackgroundImage(IDB_DLG_MAIN);
 	InitCtrls();
@@ -160,7 +163,7 @@ void CAgoraOpenLiveDlg::InitCtrls()
 	CRect ClientRect;
 	CBitmap	bmpNetQuality;
 
-	MoveWindow(0, 0, 600, 600, 1);
+	MoveWindow(0, 0, 720, 600, 1);
 	GetClientRect(&ClientRect);
 
 	bmpNetQuality.LoadBitmap(IDB_NETWORK_QUALITY);
@@ -189,13 +192,13 @@ void CAgoraOpenLiveDlg::InitChildDialog()
 	m_dlgSetup.Create(CSetupDlg::IDD, this);
 	m_dlgVideo.Create(CVideoDlg::IDD, this);
 
-	m_dlgEnterChannel.MoveWindow(140, 40, 320, 450, TRUE);
-	m_dlgSetup.MoveWindow(140, 40, 320, 450, TRUE);
+	m_dlgEnterChannel.MoveWindow(110, 70, 500, 450, TRUE);
+	m_dlgSetup.MoveWindow(110, 70, 500, 450, TRUE);
 
 	m_dlgEnterChannel.ShowWindow(SW_SHOW);
 	m_lpCurDialog = &m_dlgEnterChannel;
 
-    m_dlgSetup.SetVideoSolution(15);
+//    m_dlgSetup.SetVideoSolution(15);
 	m_dlgEnterChannel.SetVideoString(m_dlgSetup.GetVideoSolutionDes());
 }
 
@@ -279,10 +282,11 @@ void CAgoraOpenLiveDlg::DrawClient(CDC *lpDC)
 	lpDC->SelectObject(&m_ftVer);
 	lpDC->SetTextColor(RGB(0x91, 0x96, 0xA0));
 	lpDC->SetBkColor(RGB(0xFF, 0xFF, 0xFF));
-	lpString = AVC_VER;// _T("v1.3");
+
+	CString strVer = CAgoraObject::GetSDKVersionEx();
 	
 	rcText.SetRect(0, rcClient.Height() - 30, rcClient.Width(), rcClient.Height() - 5);
-	lpDC->DrawText(lpString, _tcslen(lpString), &rcText, DT_CENTER | DT_SINGLELINE);
+	lpDC->DrawText(strVer, strVer.GetLength(), &rcText, DT_CENTER | DT_SINGLELINE);
 	lpDC->SelectObject(defFont);
 }
 
@@ -306,7 +310,7 @@ LRESULT CAgoraOpenLiveDlg::OnBackPage(WPARAM wParam, LPARAM lParam)
 		m_lpCurDialog = &m_dlgEnterChannel;
 	}
 
-    
+    m_nVideoProfile = m_dlgSetup.GetVideoSolution();
     m_dlgEnterChannel.SetVideoString(m_dlgSetup.GetVideoSolutionDes());
 
 	m_lpCurDialog->ShowWindow(SW_SHOW);
@@ -342,19 +346,18 @@ LRESULT CAgoraOpenLiveDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	vc.view = m_dlgVideo.GetLocalVideoWnd();
 	vc.renderMode = RENDER_MODE_TYPE::RENDER_MODE_FIT;
 
-    CAgoraObject::GetEngine()->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
-	CAgoraObject::GetEngine()->setVideoProfile((VIDEO_PROFILE_TYPE)m_dlgSetup.GetVideoSolution(), m_dlgSetup.IsWHSwap());
-	m_lpAgoraObject->EnableVideo(TRUE);
-
-	CAgoraObject::GetAgoraObject()->EnableDauleStream(m_dlgEnterChannel.IsDauleStream());
+	int nVideoSolution = m_dlgSetup.GetVideoSolution();
+	lpRtcEngine->setVideoProfile((VIDEO_PROFILE_TYPE)nVideoSolution, m_dlgSetup.IsWHSwap());
+	lpAgoraObject->EnableVideo(TRUE);
 
 	m_dlgVideo.SetWindowText(strChannelName);
 	lpRtcEngine->setupLocalVideo(vc);
 	lpRtcEngine->startPreview();
 
 	lpAgoraObject->JoinChannel(strChannelName);
-	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
+    lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
+    
 	return 0;
 }
 
@@ -363,13 +366,14 @@ LRESULT CAgoraOpenLiveDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
 
 	lpAgoraObject->LeaveCahnnel();
-
+    lpAgoraObject->EnableVideo(FALSE);
+    
 	return 0;
 }
 
-LRESULT CAgoraOpenLiveDlg::OnLastmileQuality(WPARAM wParam, LPARAM lParam)
+LRESULT CAgoraOpenLiveDlg::OnNetworkQuality(WPARAM wParam, LPARAM lParam)
 {
-	LPAGE_LASTMILE_QUALITY lpData = (LPAGE_LASTMILE_QUALITY)wParam;
+	LPAGE_NETWORK_QUALITY lpData = (LPAGE_NETWORK_QUALITY)wParam;
 
 	if (m_nNetworkQuality != lpData->quality) {
 		m_nNetworkQuality = lpData->quality;
@@ -378,4 +382,11 @@ LRESULT CAgoraOpenLiveDlg::OnLastmileQuality(WPARAM wParam, LPARAM lParam)
 
 	delete lpData;
 	return 0;
+}
+
+void CAgoraOpenLiveDlg::OnClose()
+{
+    // TODO:  在此添加消息处理程序代码和/或调用默认值
+
+    CDialogEx::OnClose();
 }

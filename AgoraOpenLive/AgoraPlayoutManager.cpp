@@ -18,8 +18,11 @@ CAgoraPlayoutManager::~CAgoraPlayoutManager()
 BOOL CAgoraPlayoutManager::Create(IRtcEngine *lpRtcEngine)
 {
 	m_ptrDeviceManager = new AAudioDeviceManager(*lpRtcEngine);
-    if (m_ptrDeviceManager->get() == NULL)
-        return FALSE;
+	if (m_ptrDeviceManager->get() == NULL) {
+		delete m_ptrDeviceManager;
+		m_ptrDeviceManager = NULL;
+		return FALSE;
+	}
 
 	m_lpCollection = (*m_ptrDeviceManager)->enumeratePlaybackDevices();
 	if (m_lpCollection == NULL) {
@@ -112,7 +115,7 @@ BOOL CAgoraPlayoutManager::SetCurDevice(LPCTSTR lpDeviceID)
 {
 #ifdef UNICODE
 	CHAR szDeviceID[128];
-	::WideCharToMultiByte(CP_UTF8, 0, lpDeviceID, -1, szDeviceID, 128, NULL, NULL);
+	::WideCharToMultiByte(CP_ACP, 0, lpDeviceID, -1, szDeviceID, 128, NULL, NULL);
 	int nRet = (*m_ptrDeviceManager)->setPlaybackDevice(szDeviceID);
 #else
 	int nRet = (*m_ptrDeviceManager)->setPlaybackDevice(lpDeviceID);
@@ -124,6 +127,9 @@ BOOL CAgoraPlayoutManager::SetCurDevice(LPCTSTR lpDeviceID)
 void CAgoraPlayoutManager::TestPlaybackDevice(UINT nWavID, BOOL bTestOn)
 {
 	TCHAR	szWavPath[MAX_PATH];
+
+	if (m_ptrDeviceManager == NULL)
+		return;
 
 	::GetModuleFileName(NULL, szWavPath, MAX_PATH);
 	LPTSTR lpLastSlash = (LPTSTR)_tcsrchr(szWavPath, _T('\\')) + 1;

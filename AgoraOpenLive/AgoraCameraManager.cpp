@@ -16,11 +16,12 @@ CAgoraCameraManager::~CAgoraCameraManager()
 
 BOOL CAgoraCameraManager::Create(IRtcEngine *lpRtcEngine)
 {
-//	lpRtcEngine->enableVideo();
-
 	m_ptrDeviceManager = new AVideoDeviceManager(*lpRtcEngine);
-	if (m_ptrDeviceManager->get() == NULL)
+	if (m_ptrDeviceManager->get() == NULL) {
+		delete m_ptrDeviceManager;
+		m_ptrDeviceManager = NULL;
 		return FALSE;
+	}
 
 	m_lpCollection = (*m_ptrDeviceManager)->enumerateVideoDevices();
 	if (m_lpCollection == NULL) {
@@ -108,7 +109,7 @@ BOOL CAgoraCameraManager::SetCurDevice(LPCTSTR lpDeviceID)
 
 #ifdef UNICODE
 	CHAR szDeviceID[128];
-	::WideCharToMultiByte(CP_UTF8, 0, lpDeviceID, -1, szDeviceID, 128, NULL, NULL);
+	::WideCharToMultiByte(CP_ACP, 0, lpDeviceID, -1, szDeviceID, 128, NULL, NULL);
 	int nRet = (*m_ptrDeviceManager)->setDevice(szDeviceID);
 #else
 	int nRet = (*m_ptrDeviceManager)->setDevice(lpDeviceID);
@@ -119,6 +120,9 @@ BOOL CAgoraCameraManager::SetCurDevice(LPCTSTR lpDeviceID)
 
 void CAgoraCameraManager::TestCameraDevice(HWND hVideoWnd, BOOL bTestOn)
 {
+	if (m_ptrDeviceManager == NULL)
+		return;
+
 	if (bTestOn && !m_bTestingOn) {
 		ASSERT(hVideoWnd != NULL);
 		CAgoraObject::GetAgoraObject()->LocalVideoPreview(hVideoWnd, TRUE);

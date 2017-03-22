@@ -1,9 +1,7 @@
 #pragma once
 
-#include "../../../SDK/include/IAgoraRtcEngine.h"
+#include "../SDK/include/IAgoraRtcEngine.h"
 #include "AGEngineEventHandler.h"
-
-#define AVC_VER _T("V1.7.0(Build229, 10/12/2016, SDK:1.7.0)")
 
 // #define ENABLE_CODEC	1
 
@@ -16,12 +14,15 @@ using namespace agora::rtc;
 #define AG_ENGFLAG_MICPHTEST	0x00000008
 #define AG_ENGFLAG_VIDEOTEST	0x00000010
 
+#define AG_ENGFLAG_AGCON		0x00000100	// 自动增益
+#define AG_ENGFLAG_NSON			0x00000200	// 降噪
+#define AG_ENGFLAG_AECON		0x00000400	// 回声消除
 
 #define AG_CODEC_E264	0x00000000
 #define AG_CODEC_EVP	0x00000001
 #define AG_CODEC_VP8	0x00000002
 
-#define APP_ID _T("")
+#define VENDOR_KEY _T("f4637604af81440596a54254d53ade20")
 
 class CAgoraObject
 {
@@ -60,6 +61,8 @@ public:
 	BOOL EnableVideo(BOOL bEnable = TRUE);
 	BOOL IsVideoEnabled();
 
+	BOOL EnableScreenCapture(HWND hWnd, BOOL bEnable = TRUE);
+	BOOL IsScreenCaptureEnabled();
 
 	BOOL MuteLocalAudio(BOOL bMuted = TRUE);
 	BOOL IsLocalAudioMuted();
@@ -67,16 +70,21 @@ public:
 	BOOL MuteLocalVideo(BOOL bMuted = TRUE);
 	BOOL IsLocalVideoMuted();
 
+	BOOL SetHighQualityAudio(BOOL bFullBand, BOOL bStereo, BOOL bFullBitrate);
+
+//	BOOL SetVideoResolution(int nWidth, int nHeight);
+//	BOOL SetVideoMaxBitrate(int nBitrate);
+//	BOOL SetVideoMaxFrameRate(int nFrameRate);
+
+//	BOOL SetCodec(int nCodecType);
+//	int GetCodec() { return m_nCodecType; };
+
 	BOOL SetClientRole(int nIndex);
 	int GetClientRole() { return m_nRoleIndex; };
 	 
 	BOOL EnableAudioRecording(BOOL bEnable, LPCTSTR lpFilePath);
 
-	BOOL EnableDauleStream(BOOL bEnable);
-
 	BOOL EnableNetworkTest(BOOL bEnable);
-
-	BOOL SetRemoteStreamType(UINT nUID, REMOTE_VIDEO_STREAM_TYPE nType);
 
 	BOOL LocalVideoPreview(HWND hVideoWnd, BOOL bPreviewOn = TRUE);
 
@@ -85,6 +93,7 @@ public:
 	static IRtcEngine *GetEngine();
 	
 	static CString GetSDKVersion();
+	static CString GetSDKVersionEx();
 
 protected:
 	CAgoraObject(void);

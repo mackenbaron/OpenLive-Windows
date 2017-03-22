@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{26AF88DC-1933-4A1B-9991-21DF11DCE388}</ProjectGuid>
-    <RootNamespace>AgoraOpenLive</RootNamespace>
+    <RootNamespace>AgoraLiveBroadcast</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -69,9 +69,6 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PostBuildEvent>
-      <Command></Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -105,10 +102,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AGButton.h" />
+    <ClInclude Include="AGComboBox.h" />
     <ClInclude Include="AGConfig.h" />
     <ClInclude Include="AGEdit.h" />
     <ClInclude Include="AGEngineEventHandler.h" />
+    <ClInclude Include="AGEventDef.h" />
     <ClInclude Include="AGHyperLink.h" />
+    <ClInclude Include="AGLinkCtrl.h" />
     <ClInclude Include="AGMessage.h" />
     <ClInclude Include="AgoraAudInputManager.h" />
     <ClInclude Include="AgoraCameraManager.h" />
@@ -117,9 +117,11 @@
     <ClInclude Include="AgoraOpenLive.h" />
     <ClInclude Include="AgoraOpenLiveDlg.h" />
     <ClInclude Include="AGResourceVisitor.h" />
+    <ClInclude Include="AGScreenCaptureDlg.h" />
     <ClInclude Include="AGSliderCtrl.h" />
     <ClInclude Include="AGVideoTestWnd.h" />
     <ClInclude Include="AGVideoWnd.h" />
+    <ClInclude Include="ChatDlg.h" />
     <ClInclude Include="DeviceDlg.h" />
     <ClInclude Include="EnterChannelDlg.h" />
     <ClInclude Include="LanguageSet.h" />
@@ -132,10 +134,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AGButton.cpp" />
+    <ClCompile Include="AGComboBox.cpp" />
     <ClCompile Include="AGConfig.cpp" />
     <ClCompile Include="AGEdit.cpp" />
     <ClCompile Include="AGEngineEventHandler.cpp" />
     <ClCompile Include="AGHyperLink.cpp" />
+    <ClCompile Include="AGLinkCtrl.cpp" />
     <ClCompile Include="AgoraAudInputManager.cpp" />
     <ClCompile Include="AgoraCameraManager.cpp" />
     <ClCompile Include="AgoraPlayoutManager.cpp" />
@@ -143,9 +147,11 @@
     <ClCompile Include="AgoraOpenLive.cpp" />
     <ClCompile Include="AgoraOpenLiveDlg.cpp" />
     <ClCompile Include="AGResourceVisitor.cpp" />
+    <ClCompile Include="AGScreenCaptureDlg.cpp" />
     <ClCompile Include="AGSliderCtrl.cpp" />
     <ClCompile Include="AGVideoTestWnd.cpp" />
     <ClCompile Include="AGVideoWnd.cpp" />
+    <ClCompile Include="ChatDlg.cpp" />
     <ClCompile Include="DeviceDlg.cpp" />
     <ClCompile Include="EnterChannelDlg.cpp" />
     <ClCompile Include="LanguageSet.cpp" />
@@ -161,12 +167,11 @@
     <ResourceCompile Include="AgoraOpenLive.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\AgoraVideoCall.rc2" />
+    <None Include="res\AgoraOpenLive.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="IDB_TIP_VIDEO.BMP" />
     <Image Include="res\AgoraOpenLive.ico" />
-    <Image Include="res\AgoraVideoCall.ico" />
     <Image Include="res\IDB_BACKGROUND_VIDEO.bmp" />
     <Image Include="res\IDB_BTNAUDIO_VIDEO.bmp" />
     <Image Include="res\IDB_BTNBIG_HOT.bmp" />
@@ -192,6 +197,7 @@
     <Image Include="res\IDB_BTNMIN_HOT.bmp" />
     <Image Include="res\IDB_BTNMIN_HOVER.bmp" />
     <Image Include="res\IDB_BTNMIN_NORMAL.bmp" />
+    <Image Include="res\IDB_BTNMSG_VIDEO.bmp" />
     <Image Include="res\IDB_BTNNORSCR_VIDEO.bmp" />
     <Image Include="res\IDB_BTNRCDPAUSE_VIDEO.bmp" />
     <Image Include="res\IDB_BTNRCD_VIDEO.bmp" />
@@ -218,6 +224,7 @@
     <Image Include="res\IDB_DLG_MAIN.bmp" />
     <Image Include="res\IDB_ENDCALLWB_VIDEO.bmp" />
     <Image Include="res\IDB_NETWORK_QUALITY.bmp" />
+    <Image Include="res\IDB_ROOM.bmp" />
     <Image Include="res\IDB_SLD_HOVER.bmp" />
     <Image Include="res\IDB_SLD_NORMAL.bmp" />
     <Image Include="res\IDB_VIDEOTIP.bmp" />
@@ -230,7 +237,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties _x007B_8856F961-340A-11D0-A96B-00C04FD705A2_x007D_="CWriteboard_video" RESOURCE_FILE="" />
+      <UserProperties _x007B_8856F961-340A-11D0-A96B-00C04FD705A2_x007D_="CWriteboard_video" RESOURCE_FILE="AgoraLiveBroadcast.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

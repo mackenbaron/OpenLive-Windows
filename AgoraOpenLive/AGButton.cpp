@@ -11,6 +11,11 @@ IMPLEMENT_DYNAMIC(CAGButton, CButton)
 
 CAGButton::CAGButton()
 {	
+    m_crBorderNormal = RGB(0, 160, 239);
+    m_crBorderHover = RGB(0, 160, 239);
+    m_crBorderPush = RGB(0, 160, 239);
+    m_crBorderDisable = RGB(0, 160, 239);
+
 	m_crBackNormal = RGB(0, 160, 239);
 	m_crBackHover = RGB(0, 160, 239);
 	m_crBackPush = RGB(0, 160, 239);
@@ -21,6 +26,7 @@ CAGButton::CAGButton()
 	m_crTextPush = RGB(0xFF, 0xC8, 0x64);
 	m_crTextDisable = RGB(0xCC, 0xCC, 0xCC);
 
+    m_bRoundCorner = FALSE;
 	m_bHover = FALSE;
 	m_bMouseTrack = FALSE;
 	m_bFrameEffect = TRUE;
@@ -86,11 +92,22 @@ void CAGButton::SetTextColor(COLORREF crNormal, COLORREF crHover, COLORREF crPus
 	Invalidate(FALSE);
 }
 
+void CAGButton::SetBorderColor(COLORREF crNormal, COLORREF crHover, COLORREF crPush, COLORREF crDisable)
+{
+    m_crBorderNormal = crNormal;
+    m_crBorderHover = crHover;
+    m_crBorderPush = crPush;
+    m_crBorderDisable = crDisable;
+    
+    Invalidate(FALSE);
+}
+
 void CAGButton::EnableFrameEffect(BOOL bEnable)
 {
 	m_bFrameEffect = bEnable;
 	Invalidate(FALSE);
 }
+
 
 void CAGButton::PreSubclassWindow()
 {
@@ -109,7 +126,7 @@ void CAGButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	UINT nStat = m_nDefStatus;
 	UINT uStyle = DFCS_BUTTONPUSH;
 
-	if (m_bHover)
+    if (m_bHover && m_nDefStatus == AGBTN_NORMAL)
 		nStat = AGBTN_HOVER;
 
 	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
@@ -159,7 +176,16 @@ void CAGButton::DrawBack(LPDRAWITEMSTRUCT lpDrawItemStruct, UINT nStat)
 	if (m_imgBack.GetSafeHandle() == NULL || nImageIndex >= m_imgBack.GetImageCount())
 		nImageIndex = -1;
 
-	pDC->FillSolidRect(&lpDrawItemStruct->rcItem, crBackColor);
+    CRect rcButton;
+    CBrush brushBack;
+
+    rcButton.CopyRect(&lpDrawItemStruct->rcItem);
+    brushBack.CreateSolidBrush(crBackColor);
+
+	pDC->FillRect(&rcButton, &brushBack);
+
+    brushBack.DeleteObject();
+
 	if (nImageIndex != -1)
 		m_imgBack.Draw(pDC, nImageIndex, CPoint(0, 0), ILD_NORMAL);
 }
@@ -197,27 +223,53 @@ void CAGButton::DrawText(LPDRAWITEMSTRUCT lpDrawItemStruct, UINT nStat)
 	}
 
 	COLORREF crOldColor = pDC->SetTextColor(crTextColor);
-	pDC->DrawText(strText, &rcText, DT_SINGLELINE | DT_VCENTER | DT_CENTER);
+    pDC->SetBkMode(TRANSPARENT);
+    pDC->DrawText(strText, &rcText, DT_SINGLELINE | DT_VCENTER | DT_CENTER);
 	pDC->SetTextColor(crOldColor);
 }
 
 void CAGButton::DrawFrame(LPDRAWITEMSTRUCT lpDrawItemStruct, UINT nStat)
 {
-	CRect rcFocus(&lpDrawItemStruct->rcItem);
-	CDC *pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
+    CBrush brushBorder;
 
-	rcFocus.left += 3;
-	rcFocus.top += 3;
-	rcFocus.right -= 3;
-	rcFocus.bottom -= 3;
+    CRect rcFocus(&lpDrawItemStruct->rcItem);
+    CDC *pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
 
-	if (nStat == AGBTN_HOVER)
+    rcFocus.left += 3;
+    rcFocus.right -= 3;
+
+    if (m_bRoundCorner) {
+        rcFocus.left += rcFocus.Height() / 2;
+        rcFocus.right -= rcFocus.Height() / 2;
+    }
+
+    rcFocus.top += 3;
+    rcFocus.bottom -= 3;
+
+    switch (nStat)
+    {
+    case AGBTN_NORMAL:
+        brushBorder.CreateSolidBrush(m_crBorderNormal);
+		pDC->FrameRect(&lpDrawItemStruct->rcItem, &brushBorder);
+    	break;
+    case AGBTN_HOVER:
+        brushBorder.CreateSolidBrush(m_crBorderHover);
 		pDC->DrawEdge(&lpDrawItemStruct->rcItem, BDR_RAISEDOUTER, BF_RECT);
-	else if (nStat == AGBTN_PUSH)
+        break;
+    case AGBTN_PUSH:
+        brushBorder.CreateSolidBrush(m_crBorderPush);
 		pDC->DrawEdge(&lpDrawItemStruct->rcItem, BDR_SUNKENINNER, BF_RECT);
+        break;
+    case AGBTN_DISABLE:
+        brushBorder.CreateSolidBrush(m_crBorderDisable);
+		pDC->FrameRect(&lpDrawItemStruct->rcItem, &brushBorder);
+        break;
+    default:
+        break;
+    }
 
-	if (lpDrawItemStruct->itemState & ODS_FOCUS)
-		pDC->DrawFocusRect(&rcFocus);
+    if (lpDrawItemStruct->itemState & ODS_FOCUS)
+        pDC->DrawFocusRect(&rcFocus);
 }
 
 void CAGButton::OnMouseMove(UINT nFlags, CPoint point)
@@ -252,4 +304,11 @@ void CAGButton::OnMouseLeave()
 	Invalidate(FALSE);
 
 	CButton::OnMouseLeave();
+}
+
+BOOL CAGButton::OnEraseBkgnd(CDC* pDC)
+{
+    // TODO:  在此添加消息处理程序代码和/或调用默认值
+
+    return TRUE;
 }

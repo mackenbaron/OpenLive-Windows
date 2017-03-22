@@ -1,8 +1,10 @@
 #pragma once
 #include "AGButton.h"
 #include "AGEdit.h"
+#include "AGComboBox.h"
 #include "DeviceDlg.h"
 #include "afxwin.h"
+#include "afxlistctrl.h"
 
 // CEnterChannelDlg 对话框
 
@@ -17,9 +19,6 @@ public:
 	CString GetChannelName();
 
 	void SetVideoString(LPCTSTR lpVideoString);
-	void SetDauleStream(BOOL bEnable);
-	BOOL IsDauleStream();
-
 // 对话框数据
 	enum { IDD = IDD_ENTERCHANNEL_DIALOG };
 
@@ -32,7 +31,6 @@ protected:
 	afx_msg void OnBnClickedBtntestChannel();
 	afx_msg void OnBnClickedBtnjoinChannel();
 	afx_msg void OnBnClickedBtnsetChannel();
-
 	afx_msg void OnCbnSelchangeCmbRole();
 	DECLARE_MESSAGE_MAP()
 
@@ -42,9 +40,7 @@ protected:
 
 private:
 	CAGEdit			m_ctrChannel;
-//	CAGEdit			m_ctrEncKey;
-    CButton         m_ckEnableDualStream;
-
+    CAGEdit         m_ctrPassword;
     CAGButton		m_btnTest;
 	CAGButton		m_btnJoin;
 	CAGButton		m_btnSetup;
@@ -54,8 +50,8 @@ private:
 	CFont			m_ftDesc;
 	CFont			m_ftBtn;
 
+	CPen            m_penFrame;
 	CDeviceDlg		m_dlgDevice;
 
-	CComboBox		m_ctrRole;
-    
+	CAGComboBox		m_ctrRole;
 };

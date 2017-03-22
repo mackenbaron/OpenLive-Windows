@@ -60,8 +60,8 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 
 	ON_MESSAGE(WM_MSGID(EID_START_RCDSRV), &CVideoDlg::OnStartRecordingService)
 	ON_MESSAGE(WM_MSGID(EID_STOP_RCDSRV), &CVideoDlg::OnStopRecordingService)
-
-	ON_BN_CLICKED(IDC_BTNMIN_VIDEO, &CVideoDlg::OnBnClickedBtnmin)
+	
+    ON_BN_CLICKED(IDC_BTNMIN_VIDEO, &CVideoDlg::OnBnClickedBtnmin)
 	ON_BN_CLICKED(IDC_BTNCLOSE_VIDEO, &CVideoDlg::OnBnClickedBtnclose)
 	ON_BN_CLICKED(IDC_BTNRSTO_VIDEO, &CVideoDlg::OnBnClickedBtnrest)
 	ON_BN_CLICKED(IDC_BTNENDCALL_VIDEO, &CVideoDlg::OnBnClickedBtnclose)
@@ -70,8 +70,13 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTNSETUP_VIDEO, &CVideoDlg::OnBnClickedBtnsetup)
 	ON_BN_CLICKED(IDC_BTNMODE_VIDEO, &CVideoDlg::OnBnClickedBtnmode)
 	ON_BN_CLICKED(IDC_BTNAUDIO_VIDEO, &CVideoDlg::OnBnClickedBtnaudio)
-	
+	ON_BN_CLICKED(IDC_BTNMESSAGE_VIDEO, &CVideoDlg::OnBnClickedBtnmessage)
+	ON_BN_CLICKED(IDC_BTNSCRCAP_VIDEO, &CVideoDlg::OnBnClickedBtnScreenCapture)
+
 	ON_BN_CLICKED(IDC_BTNSCR_VIDEO, &CVideoDlg::OnBnClickedBtnfullscr)
+
+	ON_BN_CLICKED(ID_SCRSHARE_DESKTOPSHARE, &CVideoDlg::OnBnClickedScreenshare)
+	ON_BN_CLICKED(ID_SCRSHARE_WINDOWSHARE, &CVideoDlg::OnBnClickedWindowshare)
 	
 	ON_CBN_SELCHANGE(IDC_CBXROLE_VIDEO, &CVideoDlg::OnCbnSelchangeCmbRole)
 
@@ -103,6 +108,15 @@ void CVideoDlg::OnSize(UINT nType, int cx, int cy)
 	m_rcChildVideoArea.bottom = m_rcChildVideoArea.top + 144;
 	m_rcChildVideoArea.right = m_rcVideoArea.right - 14;
 	m_rcChildVideoArea.left = m_rcChildVideoArea.right - 192;
+
+	if (::IsWindow(m_dlgChat.GetSafeHwnd()) && m_dlgChat.IsWindowVisible()) {
+		CRect   rcChatArea;
+
+		rcChatArea.CopyRect(&m_rcVideoArea);
+		rcChatArea.top = rcChatArea.bottom - 150;
+		ClientToScreen(&rcChatArea);
+		m_dlgChat.MoveWindow(&rcChatArea);
+	}
 
 	if (m_wndLocal.GetSafeHwnd() == NULL || m_wndVideo[0].GetSafeHwnd() == NULL)
 		return;
@@ -136,6 +150,7 @@ void CVideoDlg::ShowButtonsNormal()
 	if (!m_bFullScreen)
 		nShowMode = SW_SHOW;
 
+	m_btnMessage.ShowWindow(nShowMode);
 	m_btnSetup.ShowWindow(nShowMode);
 	m_btnMode.ShowWindow(nShowMode);
 	
@@ -145,6 +160,7 @@ void CVideoDlg::ShowButtonsNormal()
 	m_btnEndCall.ShowWindow(nShowMode);
 	m_btnShow.ShowWindow(nShowMode);
 	m_btnTip.ShowWindow(nShowMode);
+	m_btnScrCap.ShowWindow(nShowMode);
 
 	GetClientRect(&rcClient);
 	AdjustButtonsNormal(rcClient.Width(), rcClient.Height());
@@ -156,6 +172,9 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 	if (m_btnSetup.GetSafeHwnd() != NULL)
 		m_btnSetup.MoveWindow(30, cy - 48, 24, 24, TRUE);
 
+
+	if (m_btnMessage.GetSafeHwnd() != NULL)
+		m_btnMessage.MoveWindow(cx / 2 - 312, cy - 60, 48, 48, TRUE);
 	if (m_btnMode.GetSafeHwnd() != NULL)
 		m_btnMode.MoveWindow(cx / 2 - 216, cy - 60, 48, 48, TRUE);
 	if (m_btnAudio.GetSafeHwnd() != NULL)
@@ -163,8 +182,11 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 	if (m_btnEndCall.GetSafeHwnd() != NULL)
 		m_btnEndCall.MoveWindow(cx / 2 - 24, cy - 60, 48, 48, TRUE);
 
+	if (m_btnScrCap.GetSafeHwnd() != NULL)
+		m_btnScrCap.MoveWindow(cx / 2 + 72, cy - 60, 48, 48, TRUE);
+
 	if (m_cbxRole.GetSafeHwnd() != NULL)
-		m_cbxRole.MoveWindow(cx / 2 + 80, cy - 50, 150, 48, TRUE);;
+		m_cbxRole.MoveWindow(cx / 2 + 150, cy - 50, 140, 48, TRUE);;
 
 	if (m_btnShow.GetSafeHwnd() != NULL)
 		m_btnShow.MoveWindow(cx - 126, cy - 48, 24, 24, TRUE);
@@ -323,6 +345,23 @@ void CVideoDlg::OnBnClickedBtnclose()
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
 
 	m_listWndInfo.RemoveAll();
+	m_dlgChat.ShowWindow(SW_HIDE);
+	m_dlgDevice.ShowWindow(SW_HIDE);
+
+	// unmute local video
+	CAgoraObject::GetAgoraObject()->MuteLocalVideo(FALSE);
+	m_btnMode.SetBackImage(IDB_BTNAUDIO_VIDEO);
+
+	// unmute local audio
+	CAgoraObject::GetAgoraObject()->MuteLocalAudio(FALSE);
+	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+
+	CAgoraObject::GetAgoraObject()->EnableScreenCapture(NULL, FALSE);
+	m_btnScrCap.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+
+	m_dlgChat.ShowWindow(SW_HIDE);
+	m_dlgChat.ClearHistory();
+	m_btnMessage.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 
 	CDialogEx::OnOK();
 }
@@ -433,6 +472,27 @@ void CVideoDlg::OnCbnSelchangeCmbRole()
 	CAgoraObject::GetAgoraObject()->SetClientRole(nSel);
 }
 
+void CVideoDlg::OnBnClickedScreenshare()
+{
+	IRtcEngine *lpRtcEngine = CAgoraObject::GetEngine();
+
+	CAgoraObject::GetAgoraObject()->EnableScreenCapture(::GetDesktopWindow(), TRUE);
+	m_btnScrCap.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+
+	m_wndLocal.Invalidate(TRUE);
+	m_wndLocal.UpdateWindow();
+
+	Invalidate(TRUE);
+	UpdateWindow();
+}
+
+void CVideoDlg::OnBnClickedWindowshare()
+{
+	m_dlgScreenCapture.RefreashWndInfo();
+	m_dlgScreenCapture.SaveScreen(NULL);
+
+	m_dlgScreenCapture.ShowWindow(SW_MAXIMIZE);
+}
 void CVideoDlg::ShowControlButton(BOOL bShow)
 {
 	int nShowMode = 0;
@@ -449,6 +509,35 @@ void CVideoDlg::ShowControlButton(BOOL bShow)
 	m_btnEndCall.ShowWindow(nShowMode);
 }
 
+void CVideoDlg::CreateScreenShareMenu()
+{
+	CRect				rcButton;
+	CMenu				Menu;
+	MENUITEMINFO		mii;
+
+	Menu.LoadMenu(IDR_MENU_SCRSHARE);
+
+	CMenu *pMenuPopup = Menu.GetSubMenu(0);
+
+	mii.cbSize = sizeof(MENUITEMINFO);
+	mii.fMask = MIIM_STRING;
+
+	mii.dwTypeData = const_cast<LPTSTR>LANG_STR("IDS_VIDEO_SCRSHARE");
+	mii.cch = _tcslen(LANG_STR("IDS_VIDEO_SCRSHARE")) + 1;
+	pMenuPopup->SetMenuItemInfo(0, &mii, FALSE);
+
+	mii.dwTypeData = const_cast<LPTSTR>LANG_STR("IDS_VIDEO_WNDSHARE");
+	mii.cch = _tcslen(LANG_STR("IDS_VIDEO_WNDSHARE")) + 1;
+	pMenuPopup->SetMenuItemInfo(1, &mii, FALSE);
+	m_btnScrCap.GetWindowRect(&rcButton);
+
+	int x = rcButton.left - 60;
+	int y = rcButton.top - 50;
+
+	pMenuPopup->TrackPopupMenu(TPM_RIGHTBUTTON, x, y, this);
+	pMenuPopup->DestroyMenu();
+}
+
 void CVideoDlg::OnBnClickedBtntip()
 {
 	BOOL bShowed = m_wndVideo[0].IsVideoInfoShowed();
@@ -460,6 +549,40 @@ void CVideoDlg::OnBnClickedBtntip()
 		m_btnTip.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
 	else
 		m_btnTip.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+}
+
+void CVideoDlg::OnBnClickedBtnScreenCapture()
+{
+	CAgoraObject *lpAgora = CAgoraObject::GetAgoraObject();
+
+	if (lpAgora->IsScreenCaptureEnabled()) {
+		lpAgora->EnableScreenCapture(NULL, FALSE);
+		m_btnScrCap.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else
+		CreateScreenShareMenu();
+
+	Invalidate();
+}
+
+void CVideoDlg::OnBnClickedBtnmessage()
+{
+	BOOL bIsShowing = m_dlgChat.IsWindowVisible();
+	CRect   rcChatArea;
+
+	rcChatArea.CopyRect(&m_rcVideoArea);
+	rcChatArea.top = rcChatArea.bottom - 150;
+	ClientToScreen(&rcChatArea);
+
+	if (bIsShowing) {
+		m_dlgChat.ShowWindow(SW_HIDE);
+		m_btnMessage.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else {
+		m_dlgChat.ShowWindow(SW_SHOW);
+		m_dlgChat.MoveWindow(&rcChatArea, TRUE);
+		m_btnMessage.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+	}
 }
 
 void CVideoDlg::OnBnClickedBtnsetup()
@@ -663,10 +786,13 @@ void CVideoDlg::InitCtrls()
 	
 	GetClientRect(&rcClient);
 	
+	m_btnMessage.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNMESSAGE_VIDEO);
 	m_btnSetup.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSETUP_VIDEO);
 	m_btnMode.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNMODE_VIDEO);
 	m_btnAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNAUDIO_VIDEO);
 	m_btnEndCall.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNENDCALL_VIDEO);
+	m_btnScrCap.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCRCAP_VIDEO);
+
 	m_cbxRole.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXROLE_VIDEO);
 
 	for (int nIndex = 0; nIndex < 2; nIndex++) {
@@ -694,6 +820,7 @@ void CVideoDlg::InitCtrls()
 	m_btnRst.MoveWindow(rcClient.Width() - 48, 1, 22, 22, TRUE);
 	m_btnClose.MoveWindow(rcClient.Width() - 24, 1, 22, 22, TRUE);
 
+	m_btnMessage.MoveWindow(rcClient.Width() / 2 - 264, rcClient.Height() - 84, 72, 72, TRUE);
 	m_btnSetup.MoveWindow(rcClient.Width() / 2 - 144, rcClient.Height() - 84, 72, 72, TRUE);
 	m_btnMode.MoveWindow(rcClient.Width() / 2 - 24, rcClient.Height() - 84, 72, 72, TRUE);
 	m_btnAudio.MoveWindow(rcClient.Width() / 2 + 24, rcClient.Height() - 84, 72, 72, TRUE);
@@ -707,6 +834,14 @@ void CVideoDlg::InitCtrls()
 	m_btnMin.SetBackImage(IDB_BTNMIN, RGB(0xFF, 0x00, 0xFF));
 	m_btnRst.SetBackImage(IDB_BTNMAX, RGB(0xFF, 0x00, 0xFF));
 	m_btnClose.SetBackImage(IDB_BTNCLOSE, RGB(0xFF, 0x00, 0xFF));
+
+	m_btnMessage.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+	m_btnMessage.EnableFrameEffect(FALSE);
+	m_btnMessage.SetBackImage(IDB_BTNMSG_VIDEO, RGB(0x26, 0x26, 0x26));
+
+	m_btnScrCap.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+	m_btnScrCap.EnableFrameEffect(FALSE);
+	m_btnScrCap.SetBackImage(IDB_BTNSCRCAP_VIDEO, RGB(0x26, 0x26, 0x26));
 
 	m_btnTip.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
 	m_btnTip.EnableFrameEffect(FALSE);
@@ -754,7 +889,6 @@ void CVideoDlg::ShowVideo1()
 		m_wndVideo[0].ShowWindow(SW_SHOW);
 		m_wndVideo[0].SetBigShowFlag(TRUE);
 		m_wndVideo[0].SetParent(this);
-		CAgoraObject::GetAgoraObject()->SetRemoteStreamType(m_wndVideo[0].GetUID(), REMOTE_VIDEO_STREAM_HIGH);
 
 		m_wndLocal.MoveWindow(&m_rcChildVideoArea, FALSE);
 		m_wndLocal.SetParent(&m_wndVideo[0]);
@@ -775,8 +909,6 @@ void CVideoDlg::ShowVideo4()
 		m_wndVideo[nIndex].ShowWindow(SW_SHOW);
 		m_wndVideo[nIndex].SetBigShowFlag(FALSE);
 		m_wndVideo[nIndex].SetParent(this);
-
-		CAgoraObject::GetAgoraObject()->SetRemoteStreamType(m_wndVideo[nIndex].GetUID(), REMOTE_VIDEO_STREAM_HIGH);
 	}
 
 	m_wndVideo[0].MoveWindow(0, m_rcVideoArea.top, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
@@ -820,9 +952,6 @@ void CVideoDlg::ShowMulti()
 	m_lpBigShowed->MoveWindow(&m_rcVideoArea, TRUE);
 	m_lpBigShowed->SetParent(this);
 	m_lpBigShowed->SetBigShowFlag(TRUE);
-
-	if (m_lpBigShowed->GetUID() != 0)
-		CAgoraObject::GetAgoraObject()->SetRemoteStreamType(m_lpBigShowed->GetUID(), REMOTE_VIDEO_STREAM_HIGH);
 	
 	for (int nIndex = 0; nIndex < 4; nIndex++) {
 		int nXPos = (m_rcVideoArea.Width() / 2) - 402 + (204 * nLocalIndex);
@@ -833,7 +962,6 @@ void CVideoDlg::ShowMulti()
 				m_wndVideo[nIndex].MoveWindow(nXPos, nYPos, 192, 144, TRUE);
 				m_wndVideo[nIndex].ShowWindow(SW_SHOW);
 				m_wndVideo[nIndex].SetParent(m_lpBigShowed);
-				CAgoraObject::GetAgoraObject()->SetRemoteStreamType(m_wndVideo[nIndex].GetUID(), REMOTE_VIDEO_STREAM_LOW);
 				nLocalIndex++;
 			}
 		}
@@ -857,6 +985,9 @@ BOOL CVideoDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	m_dlgDevice.Create(CDeviceDlg::IDD, this);
 	m_dlgDevice.EnableDeviceTest(FALSE);
+
+	m_dlgScreenCapture.Create(CAGScreenCaptureDlg::IDD, this);
+	m_dlgChat.Create(CChatDlg::IDD, this);
 
 	InitCtrls();
 
@@ -972,7 +1103,6 @@ void CVideoDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
 	// TODO:  在此处添加消息处理程序代码
-//	int nCodec = CAgoraObject::GetAgoraObject()->GetCodec();
 
 	if (bShow && GetSafeHwnd() != NULL) {
 		RebindVideoWnd();

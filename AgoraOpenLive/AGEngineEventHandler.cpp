@@ -168,14 +168,14 @@ void CAGEngineEventHandler::onVideoDeviceStateChanged(const char* deviceId, int 
 
 }
 
-void CAGEngineEventHandler::onLastmileQuality(int quality)
+void CAGEngineEventHandler::onNetworkQuality(int quality)
 {
-	LPAGE_LASTMILE_QUALITY lpData = new AGE_LASTMILE_QUALITY;
+	LPAGE_NETWORK_QUALITY lpData = new AGE_NETWORK_QUALITY;
 
 	lpData->quality = quality;
 
-	if (m_hMainWnd != NULL)
-		::PostMessage(m_hMainWnd, WM_MSGID(EID_LASTMILE_QUALITY), (WPARAM)lpData, 0);
+	if(m_hMainWnd != NULL)
+		::PostMessage(m_hMainWnd, WM_MSGID(EID_NETWORK_QUALITY), (WPARAM)lpData, 0);
 
 }
 

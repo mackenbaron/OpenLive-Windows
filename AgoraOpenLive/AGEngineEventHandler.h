@@ -26,7 +26,7 @@ public:
 	virtual void onAudioDeviceStateChanged(const char* deviceId, int deviceType, int deviceState);
 	virtual void onVideoDeviceStateChanged(const char* deviceId, int deviceType, int deviceState);
 
-	virtual void onLastmileQuality(int quality);
+	virtual void onNetworkQuality(int quality);
 	virtual void onFirstLocalVideoFrame(int width, int height, int elapsed);
 	virtual void onFirstRemoteVideoDecoded(uid_t uid, int width, int height, int elapsed);
 	virtual void onFirstRemoteVideoFrame(uid_t uid, int width, int height, int elapsed);

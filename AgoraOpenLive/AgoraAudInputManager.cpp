@@ -18,8 +18,11 @@ CAgoraAudInputManager::~CAgoraAudInputManager()
 BOOL CAgoraAudInputManager::Create(IRtcEngine *lpRtcEngine)
 {
 	m_ptrDeviceManager = new AAudioDeviceManager(*lpRtcEngine);
-    if (m_ptrDeviceManager->get() == NULL)
-        return FALSE;
+	if (m_ptrDeviceManager->get() == NULL) {
+		delete m_ptrDeviceManager;
+		m_ptrDeviceManager = NULL;
+		return FALSE;
+	}
 
 	m_lpCollection = (*m_ptrDeviceManager)->enumerateRecordingDevices();
 	if (m_lpCollection == NULL) {
@@ -27,7 +30,6 @@ BOOL CAgoraAudInputManager::Create(IRtcEngine *lpRtcEngine)
 		m_ptrDeviceManager = NULL;
 	}
 
-	
 	return m_lpCollection != NULL ? TRUE : FALSE;
 }
 
@@ -128,7 +130,7 @@ BOOL CAgoraAudInputManager::SetCurDevice(LPCTSTR lpDeviceID)
 
 #ifdef UNICODE
 	CHAR szDeviceID[128];
-	::WideCharToMultiByte(CP_UTF8, 0, lpDeviceID, -1, szDeviceID, 128, NULL, NULL);
+	::WideCharToMultiByte(CP_ACP, 0, lpDeviceID, -1, szDeviceID, 128, NULL, NULL);
 	int nRet = (*m_ptrDeviceManager)->setRecordingDevice(szDeviceID);
 #else
 	int nRet = (*m_ptrDeviceManager)->setRecordingDevice(lpDeviceID);
@@ -139,6 +141,9 @@ BOOL CAgoraAudInputManager::SetCurDevice(LPCTSTR lpDeviceID)
 
 void CAgoraAudInputManager::TestAudInputDevice(HWND hMsgWnd, BOOL bTestOn)
 {
+	if (m_ptrDeviceManager == NULL)
+		return;
+
 	if (bTestOn && !m_bTestingOn) {
 		m_hOldMsgWnd = CAgoraObject::GetAgoraObject()->GetMsgHandlerWnd();
 		CAgoraObject::GetAgoraObject()->SetMsgHandlerWnd(hMsgWnd);

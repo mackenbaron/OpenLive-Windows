@@ -2,6 +2,8 @@
 #include "AGButton.h"
 #include "AGVideoWnd.h"
 #include "DeviceDlg.h"
+#include "ChatDlg.h"
+#include "AGScreenCaptureDlg.h"
 
 // CVideoDlg 对话框
 
@@ -29,6 +31,7 @@ public:
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
+	void CreateScreenShareMenu();
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	virtual BOOL OnInitDialog();
@@ -46,13 +49,18 @@ protected:
 	afx_msg void OnBnClickedBtnclose();
 	afx_msg void OnBnClickedBtnrest();
 
+	afx_msg void OnBnClickedBtnmessage();
 	afx_msg void OnBnClickedBtnsetup();
 	afx_msg void OnBnClickedBtnmode();
 	afx_msg void OnBnClickedBtnaudio();
 	afx_msg void OnBnClickedBtntip();
+	afx_msg void OnBnClickedBtnScreenCapture();
 
 	afx_msg void OnBnClickedBtnfullscr();
 	afx_msg void OnCbnSelchangeCmbRole();
+
+	afx_msg void OnBnClickedScreenshare();
+	afx_msg void OnBnClickedWindowshare();
 
 	// 用于处理引擎的回调消息
 	afx_msg LRESULT OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
@@ -69,7 +77,6 @@ protected:
 	afx_msg LRESULT OnStartRecordingService(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnStopRecordingService(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnApiCallExecuted(WPARAM wParam, LPARAM lParam);
-	
 
 	DECLARE_MESSAGE_MAP()
 
@@ -101,6 +108,8 @@ private:
 	CAGButton		m_btnClose;
 	
 	CAGButton		m_btnSetup;
+
+	CAGButton       m_btnMessage;
 	
 	CAGButton		m_btnMode;
 	CAGButton		m_btnAudio;
@@ -108,6 +117,7 @@ private:
 	CComboBox		m_cbxRole;
 	CAGButton		m_btnShow;
 	CAGButton		m_btnTip;
+	CAGButton		m_btnScrCap;
 
 	BOOL			m_bLastStat;
 	UINT			m_nScreenMode;
@@ -118,9 +128,12 @@ private:
 	CAGVideoWnd		*m_lpBigShowed;
 
 	CDeviceDlg		m_dlgDevice;
-		
+	CChatDlg        m_dlgChat;
+
 	CRect			m_rcVideoArea;
 	CRect			m_rcChildVideoArea;
+
+	CAGScreenCaptureDlg	m_dlgScreenCapture;
 
 private:	// data	
 

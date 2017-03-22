@@ -1,7 +1,8 @@
 #pragma once
 #include "AGButton.h"
-
+#include "AGComboBox.h"
 #include "AGSliderCtrl.h"
+#include "AGLinkCtrl.h"
 #include "AGVideoTestWnd.h"
 
 #include "AgoraPlayoutManager.h"
@@ -30,11 +31,13 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 
-	afx_msg void OnBnClickedBtnainDevice();
-	afx_msg void OnBnClickedBtnaoutDevice();
-	afx_msg void OnBnClickedBtncamDevice();
+	afx_msg void OnStnClickedSlkainDevice();
+	afx_msg void OnStnClickedSlkaoutDevice();
+	afx_msg void OnStnClickedSlkcamDevice();
+
 	afx_msg void OnBnClickedBtncancelDevice();
 	afx_msg void OnBnClickedBtnconfirmDevice();
+	afx_msg void OnBnClickedBtnapplyDevice();
 
 	afx_msg LRESULT OnEIDAudioVolumeIndication(WPARAM wParam, LPARAM lParam);
 
@@ -44,23 +47,26 @@ protected:
 	void InitCtrls();
 	void DrawClient(CDC *lpDC);
 
-
 private:
-	CFont		m_ftDes;		// text in ctrl
-	CFont		m_ftBtn;		// button
+	CFont			m_ftLink;
+	CFont			m_ftDes;		// text in ctrl
+	CFont			m_ftBtn;		// button
+	CPen            m_penFrame;
 
-	CComboBox		m_cbxAIn;
-	CComboBox		m_cbxAOut;
-	CComboBox		m_cbxCam;
+	CAGComboBox		m_cbxAIn;
+	CAGComboBox		m_cbxAOut;
+	CAGComboBox		m_cbxCam;
+
+	CAGLinkCtrl       m_slkAudInTest;
+	CAGLinkCtrl       m_slkAudOutTest;
+	CAGLinkCtrl       m_slkCamTest;
 
 	CAGSliderCtrl	m_sldAInVol;
 	CAGSliderCtrl	m_sldAOutVol;
 
-	CAGButton		m_btnAInTest;
-	CAGButton		m_btnAOutTest;
-	CAGButton		m_btnCamTest;
 	CAGButton		m_btnCancel;
 	CAGButton		m_btnConfirm;
+	CAGButton		m_btnApply;
 
 	CAGVideoTestWnd	m_wndVideoTest;
 
@@ -69,4 +75,5 @@ private:
 	CAgoraPlayoutManager	m_agPlayout;
 	CAgoraAudInputManager	m_agAudioin;
 	CAgoraCameraManager		m_agCamera;
+	
 };

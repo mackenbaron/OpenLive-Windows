@@ -1,5 +1,6 @@
 #pragma once
 #include "AGButton.h"
+#include "AGComboBox.h"
 #include "AGSliderCtrl.h"
 #include "afxwin.h"
 
@@ -18,8 +19,9 @@ public:
     void SetVideoSolution(int nIndex);
     int GetVideoSolution();
     CString GetVideoSolutionDes();
-    void SetWHSwap(BOOL bSwap);
-    BOOL IsWHSwap();
+
+	void SetWHSwap(BOOL bSwap);
+	BOOL IsWHSwap();
 
 // 对话框数据
 	enum { IDD = IDD_SETUP_DIALOG };
@@ -39,6 +41,7 @@ protected:
 
 	afx_msg void OnPaint();
 	afx_msg void OnBnClickedBtnconfirmSetup();
+	afx_msg void OnBnClickedBtncancelSetup();
 
 	DECLARE_MESSAGE_MAP()
 
@@ -48,20 +51,26 @@ protected:
 	void DrawClient(CDC *lpDC);
 
 private:
+	CAGButton       m_btnCancel;
 	CAGButton		m_btnConfirm;
 	CButton			m_ckSaveSettings;
-    CButton         m_ckSwapWH;
+	CButton			m_ckSwapWH;
 
-	CComboBox		m_cbxVideoProfile;
+	CButton			m_ckFullBand;
+	CButton			m_ckStereo;
+	CButton			m_ckFullBitrate;
+
+	CAGComboBox		m_cbxVideoProfile;
 
 	CFont			m_ftHead;		// title
 	CFont			m_ftDes;		// text in ctrl
 	CFont			m_ftBtn;		// button
+	CPen            m_penFrame;
 
     int                 m_nProfileValue[64];
 	LPTSTR			    m_szProfileDes[64];
 	AGNET_RATE_RANGE	m_agRateRange[13];
 	
 private:
-	CAGConfig		m_agConfig;
+	CAGConfig		m_agConfig;	
 };

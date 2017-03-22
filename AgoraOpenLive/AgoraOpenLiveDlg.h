@@ -43,7 +43,7 @@ protected:
 	afx_msg LRESULT OnJoinChannel(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnLeaveChannel(WPARAM wParam, LPARAM lParam);
 
-	afx_msg LRESULT OnLastmileQuality(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnNetworkQuality(WPARAM wParam, LPARAM lParam);
 
 
 	DECLARE_MESSAGE_MAP()
@@ -74,5 +74,8 @@ private:
 	IRtcEngine		*m_lpRtcEngine;
 
 private:	// data
+    int m_nVideoProfile;
 	int m_nNetworkQuality;
+public:
+    afx_msg void OnClose();
 };

@@ -41,6 +41,29 @@ CString CAgoraObject::GetSDKVersion()
 	return strEngineVer;
 }
 
+CString CAgoraObject::GetSDKVersionEx()
+{
+	int nBuildNumber = 0;
+	const char *lpszEngineVer = getAgoraRtcEngineVersion(&nBuildNumber);
+
+	CString strEngineVer;
+	CString strVerEx;
+	SYSTEMTIME sysTime;
+
+#ifdef UNICODE
+	::MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, lpszEngineVer, -1, strEngineVer.GetBuffer(256), 256);
+	strEngineVer.ReleaseBuffer();
+#else
+	strEngineVer = lpszEngineVer;
+#endif
+
+	::GetLocalTime(&sysTime);
+	strVerEx.Format(_T("V%s, Build%d, %d/%d/%d, V%s"), strEngineVer, nBuildNumber, sysTime.wYear, sysTime.wMonth, sysTime.wDay, strEngineVer);
+
+	return strVerEx;
+}
+
+
 IRtcEngine *CAgoraObject::GetEngine()
 {
 	if(m_lpAgoraEngine == NULL)
@@ -71,7 +94,7 @@ CAgoraObject *CAgoraObject::GetAgoraObject(LPCTSTR lpVendorKey)
 	::WideCharToMultiByte(CP_ACP, 0, lpVendorKey, -1, szVendorKey, 128, NULL, NULL);
 	ctx.appId = szVendorKey;
 #else
-    ctx.appId = lpVendorKey;
+	ctx.appId = lpVendorKey;
 #endif
 	m_lpAgoraEngine->initialize(ctx);
 
@@ -203,6 +226,8 @@ BOOL CAgoraObject::SetLogFilePath(LPCTSTR lpLogPath)
 BOOL CAgoraObject::JoinChannel(LPCTSTR lpChannelName, UINT nUID)
 {
 	int nRet = 0;
+
+//	m_lpAgoraEngine->setVideoProfile(VIDEO_PROFILE_720P);
 	
 #ifdef UNICODE
 	CHAR szChannelName[128];
@@ -269,6 +294,28 @@ BOOL CAgoraObject::IsVideoEnabled()
 	return m_bVideoEnable;
 }
 
+BOOL CAgoraObject::EnableScreenCapture(HWND hWnd, BOOL bEnable)
+{
+	ASSERT(m_lpAgoraEngine != NULL);
+
+	int ret = 0;
+	RtcEngineParameters rep(*m_lpAgoraEngine);
+
+	if (bEnable)
+		ret = rep.startScreenCapture(hWnd);
+	else
+		ret = rep.stopScreenCapture();
+
+	if (ret == 0)
+		m_bScreenCapture = bEnable;
+
+	return ret == 0 ? TRUE : FALSE;
+}
+
+BOOL CAgoraObject::IsScreenCaptureEnabled()
+{
+	return m_bScreenCapture;
+}
 BOOL CAgoraObject::MuteLocalAudio(BOOL bMuted)
 {
 	ASSERT(m_lpAgoraEngine != NULL);
@@ -371,6 +418,15 @@ BOOL CAgoraObject::SetCodec(int nCodecType)
 }
 */
 
+BOOL CAgoraObject::SetHighQualityAudio(BOOL bFullBand, BOOL bStereo, BOOL bFullBitrate)
+{
+	RtcEngineParameters rep(*m_lpAgoraEngine);
+
+	int nRet = rep.setHighQualityAudioParameters(bFullBand, bStereo, bFullBitrate);
+
+	return nRet == 0 ? TRUE : FALSE;
+}
+
 BOOL CAgoraObject::SetClientRole(int nIndex)
 {
 	int nRet = 0;
@@ -416,35 +472,26 @@ BOOL CAgoraObject::EnableAudioRecording(BOOL bEnable, LPCTSTR lpFilePath)
 
 	return ret == 0 ? TRUE : FALSE;
 }
-
-BOOL CAgoraObject::EnableDauleStream(BOOL bEnable)
+/*
+BOOL CAgoraObject::RefreashRecordingServiceStatus()
 {
 	RtcEngineParameters rep(*m_lpAgoraEngine);
+	int ret = rep.refreshRecordingServiceStatus();
 
-	int nRet = rep.enableDualStreamMode(bEnable);
-
-	return nRet == 0 ? TRUE : FALSE;
+	return ret == 0 ? TRUE : FALSE;
 }
+*/
 
 BOOL CAgoraObject::EnableNetworkTest(BOOL bEnable)
 {
 	int ret = 0;
 
-	if (bEnable)
-		ret = m_lpAgoraEngine->enableLastmileTest();
+/*	if (bEnable)
+		ret = m_lpAgoraEngineEx->enableNetworkTest();
 	else
-		ret = m_lpAgoraEngine->disableLastmileTest();
-
+		ret = m_lpAgoraEngineEx->disableNetworkTest();
+*/
 	return ret == 0 ? TRUE : FALSE;
-}
-
-BOOL CAgoraObject::SetRemoteStreamType(UINT nUID, REMOTE_VIDEO_STREAM_TYPE nType)
-{
-	RtcEngineParameters rep(*m_lpAgoraEngine);
-
-	int nRet = rep.setRemoteVideoStreamType(nUID, nType);
-
-	return nRet == 0 ? TRUE : FALSE;
 }
 
 BOOL CAgoraObject::LocalVideoPreview(HWND hVideoWnd, BOOL bPreviewOn)
