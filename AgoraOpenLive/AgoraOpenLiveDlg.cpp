@@ -145,11 +145,10 @@ BOOL CAgoraOpenLiveDlg::OnInitDialog()
     }
 
 	m_lpAgoraObject->SetLogFilePath(NULL);
-	m_lpAgoraObject->EnableNetworkTest(TRUE);
 	m_lpAgoraObject->SetMsgHandlerWnd(GetSafeHwnd());
 	CAgoraObject::GetEngine()->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
-	CAgoraObject::GetAgoraObject()->SetClientRole(0);
 	CAgoraObject::GetAgoraObject()->EnableVideo(TRUE);
+	CAgoraObject::GetAgoraObject()->SetClientRole(CLIENT_ROLE_BROADCASTER);
 
 	SetBackgroundImage(IDB_DLG_MAIN);
 	InitCtrls();
@@ -348,8 +347,7 @@ LRESULT CAgoraOpenLiveDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
 	int nVideoSolution = m_dlgSetup.GetVideoSolution();
 	lpRtcEngine->setVideoProfile((VIDEO_PROFILE_TYPE)nVideoSolution, m_dlgSetup.IsWHSwap());
-	lpAgoraObject->EnableVideo(TRUE);
-
+	
 	m_dlgVideo.SetWindowText(strChannelName);
 	lpRtcEngine->setupLocalVideo(vc);
 	lpRtcEngine->startPreview();
@@ -366,7 +364,6 @@ LRESULT CAgoraOpenLiveDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
 
 	lpAgoraObject->LeaveCahnnel();
-    lpAgoraObject->EnableVideo(FALSE);
     
 	return 0;
 }

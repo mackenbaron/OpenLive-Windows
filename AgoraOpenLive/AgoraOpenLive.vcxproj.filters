@@ -79,6 +79,9 @@
     <ClCompile Include="AgoraOpenLiveDlg.cpp">
       <Filter>UI\Dialog</Filter>
     </ClCompile>
+    <ClCompile Include="SEIDlg.cpp">
+      <Filter>UI\Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AGConfig.h">
@@ -169,6 +172,9 @@
       <Filter>App</Filter>
     </ClInclude>
     <ClInclude Include="AgoraOpenLiveDlg.h">
+      <Filter>UI\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="SEIDlg.h">
       <Filter>UI\Dialog</Filter>
     </ClInclude>
   </ItemGroup>
@@ -347,6 +353,9 @@
     <Image Include="res\AgoraOpenLive.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\IDB_BTNMORE_VIDEO.bmp" />
+    <Image Include="res\IDB_MENU_DEVICE.bmp" />
+    <Image Include="res\IDB_MENU_SEI.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

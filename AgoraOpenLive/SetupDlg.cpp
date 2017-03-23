@@ -254,7 +254,7 @@ void CSetupDlg::OnBnClickedBtnconfirmSetup()
 	BOOL bStereo = m_ckStereo.GetCheck();
 	BOOL bFullBitrate = m_ckFullBitrate.GetCheck();
 
-	CAgoraObject::GetAgoraObject()->SetHighQualityAudio(bFullBand, bStereo, bFullBitrate);
+//	CAgoraObject::GetAgoraObject()->SetHighQualityAudio(bFullBand, bStereo, bFullBitrate);
 }
 
 void CSetupDlg::OnPaint()

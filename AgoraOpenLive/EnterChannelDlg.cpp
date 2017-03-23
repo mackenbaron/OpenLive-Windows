@@ -206,7 +206,10 @@ void CEnterChannelDlg::OnCbnSelchangeCmbRole()
 {
 	int nSel = m_ctrRole.GetCurSel();
 
-    CAgoraObject::GetAgoraObject()->SetClientRole(nSel);
+	if (nSel == 0)
+		CAgoraObject::GetAgoraObject()->SetClientRole(CLIENT_ROLE_BROADCASTER);
+	else
+		CAgoraObject::GetAgoraObject()->SetClientRole(CLIENT_ROLE_AUDIENCE);
 }
 
 CString CEnterChannelDlg::GetChannelName()

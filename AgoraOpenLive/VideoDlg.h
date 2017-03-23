@@ -3,6 +3,7 @@
 #include "AGVideoWnd.h"
 #include "DeviceDlg.h"
 #include "ChatDlg.h"
+#include "SEIDlg.h"
 #include "AGScreenCaptureDlg.h"
 
 // CVideoDlg 对话框
@@ -31,7 +32,7 @@ public:
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
-	void CreateScreenShareMenu();
+	
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	virtual BOOL OnInitDialog();
@@ -50,17 +51,20 @@ protected:
 	afx_msg void OnBnClickedBtnrest();
 
 	afx_msg void OnBnClickedBtnmessage();
-	afx_msg void OnBnClickedBtnsetup();
 	afx_msg void OnBnClickedBtnmode();
 	afx_msg void OnBnClickedBtnaudio();
 	afx_msg void OnBnClickedBtntip();
 	afx_msg void OnBnClickedBtnScreenCapture();
+	afx_msg void OnBnClickedBtnMore();
 
 	afx_msg void OnBnClickedBtnfullscr();
 	afx_msg void OnCbnSelchangeCmbRole();
 
 	afx_msg void OnBnClickedScreenshare();
 	afx_msg void OnBnClickedWindowshare();
+
+	afx_msg void OnBnClickedBtnsetup();
+	afx_msg void OnBnClickedBtSEIPush();
 
 	// 用于处理引擎的回调消息
 	afx_msg LRESULT OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
@@ -83,6 +87,8 @@ protected:
 protected:
 	BOOL NeedShowSizeBox(CPoint point);
 	void EnableSize(BOOL bEnable);
+	void CreateScreenShareMenu();
+	void CreateMoreMenu();
 
 	void DrawHead(CDC *pDC);
 
@@ -102,14 +108,13 @@ protected:
 
 private:
 	CBrush			m_brHead;
+	CFont			m_ftDes;
 
 	CAGButton		m_btnMin;
 	CAGButton		m_btnRst;
 	CAGButton		m_btnClose;
 	
-	CAGButton		m_btnSetup;
-
-	CAGButton       m_btnMessage;
+//	CAGButton		m_btnSetup;
 	
 	CAGButton		m_btnMode;
 	CAGButton		m_btnAudio;
@@ -118,6 +123,8 @@ private:
 	CAGButton		m_btnShow;
 	CAGButton		m_btnTip;
 	CAGButton		m_btnScrCap;
+
+	CAGButton       m_btnMore;
 
 	BOOL			m_bLastStat;
 	UINT			m_nScreenMode;
@@ -129,9 +136,13 @@ private:
 
 	CDeviceDlg		m_dlgDevice;
 	CChatDlg        m_dlgChat;
+	CSEIDlg			m_dlgSEI;
 
 	CRect			m_rcVideoArea;
 	CRect			m_rcChildVideoArea;
+
+	CBitmap         m_bitMenuDevice;
+	CBitmap			m_bitMenuSEI;
 
 	CAGScreenCaptureDlg	m_dlgScreenCapture;
 
