@@ -17,7 +17,7 @@ CAgoraAudInputManager::~CAgoraAudInputManager()
 
 BOOL CAgoraAudInputManager::Create(IRtcEngine *lpRtcEngine)
 {
-	m_ptrDeviceManager = new AAudioDeviceManager(*lpRtcEngine);
+	m_ptrDeviceManager = new AAudioDeviceManager(lpRtcEngine);
 	if (m_ptrDeviceManager->get() == NULL) {
 		delete m_ptrDeviceManager;
 		m_ptrDeviceManager = NULL;

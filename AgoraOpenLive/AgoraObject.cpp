@@ -320,15 +320,27 @@ BOOL CAgoraObject::IsVideoEnabled()
 	return m_bVideoEnable;
 }
 
-BOOL CAgoraObject::EnableScreenCapture(HWND hWnd, BOOL bEnable)
+BOOL CAgoraObject::EnableScreenCapture(HWND hWnd, int nCapFPS, LPCRECT lpCapRect, BOOL bEnable)
 {
 	ASSERT(m_lpAgoraEngine != NULL);
 
 	int ret = 0;
 	RtcEngineParameters rep(*m_lpAgoraEngine);
 
-	if (bEnable)
-		ret = rep.startScreenCapture(hWnd);
+	Rect rcCap;
+
+	if (bEnable) {
+		if (lpCapRect == NULL)
+			ret = rep.startScreenCapture(hWnd, nCapFPS, NULL);
+		else {
+			rcCap.left = lpCapRect->left;
+			rcCap.right = lpCapRect->right;
+			rcCap.top = lpCapRect->top;
+			rcCap.bottom = lpCapRect->bottom;
+
+			ret = rep.startScreenCapture(hWnd, nCapFPS, &rcCap);
+		}
+	}
 	else
 		ret = rep.stopScreenCapture();
 
@@ -482,7 +494,7 @@ BOOL CAgoraObject::EnableAudioRecording(BOOL bEnable, LPCTSTR lpFilePath)
 #ifdef UNICODE
 		CHAR szFilePath[MAX_PATH];
 		::WideCharToMultiByte(CP_ACP, 0, lpFilePath, -1, szFilePath, MAX_PATH, NULL, NULL);
-		ret = rep.startAudioRecording(szFilePath);
+		ret = rep.startAudioRecording(szFilePath, AUDIO_RECORDING_QUALITY_HIGH);
 #else
 		ret = rep.startAudioRecording(lpFilePath);
 #endif

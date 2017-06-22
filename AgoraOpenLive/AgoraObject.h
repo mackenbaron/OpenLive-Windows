@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../SDK/include/IAgoraRtcEngine.h"
-#include "AGEngineEventHandler.h"
 #include <atlcoll.h>
+#include <IAgoraRtcEngine.h>
+
+#include "AGEngineEventHandler.h"
 
 // #define ENABLE_CODEC	1
 
@@ -78,7 +79,7 @@ public:
 	BOOL EnableVideo(BOOL bEnable = TRUE);
 	BOOL IsVideoEnabled();
 
-	BOOL EnableScreenCapture(HWND hWnd, BOOL bEnable = TRUE);
+	BOOL EnableScreenCapture(HWND hWnd, int nCapFPS = 15, LPCRECT lpCapRect = NULL, BOOL bEnable = TRUE);
 	BOOL IsScreenCaptureEnabled();
 
 	BOOL MuteLocalAudio(BOOL bMuted = TRUE);

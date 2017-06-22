@@ -36,13 +36,14 @@
 #include "LanguageSet.h"
 #include "AGMessage.h"
 
-#include "../SDK/include/IAgoraRtcEngine.h"
+
 #include "AgoraObject.h"
 
 #include "AGEventDef.h"
 #include <afxdisp.h>
 
-#pragma comment(lib, "../SDK/lib/agorartc.lib")
+#include <IAgoraRtcEngine.h>
+#pragma comment(lib, "agorartc.lib")
 
 
 #ifdef _UNICODE
